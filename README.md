@@ -32,7 +32,7 @@ The notification of which approach should be used for reads and writes will be r
 Also we would need to provide scripts that would be executed after all application nodes will reach a specific phase:
 
 1. create optional db columns: `firstName` and `lastName`
-2. for each record that misses values for `firstName` and `lastName` generate them using the `fullName` field
+2. for each record that misses values for `firstName` and `lastName` populate them using the `fullName` field
 3. nothing
 4. delete db column: `fullName`
 

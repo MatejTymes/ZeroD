@@ -35,8 +35,8 @@ Also we would need to provide scripts to execute after all application nodes wil
 |:-----:|------------------------------------------------------------------------------------------------------------|
 | 1.    | create new nullable db columns: `firstName` and `lastName`                                                 |
 | 2.    | for each record that misses values for `firstName` and `lastName` populate them using the `fullName` field |
-| 3.    | make new db columns non-nullable                                                                           |
-| 4.    | delete db column: `fullName`                                                                               |
+| 3.    | make new db columns `firstName` and `lastName` non-nullable                                                |
+| 4.    | delete old db column: `fullName`                                                                           |
 
 ZeroD will select which node should execute which script based on the actual stage of all application nodes.
 

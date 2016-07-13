@@ -15,6 +15,16 @@ public class AccessGuideConcurrencyTest {
     }
 
     @Test
+    public void shouldNotBlockOnSwitchInNewReadStateMethodsAreInProgress() {
+        // todo: implement
+    }
+
+    @Test
+    public void shouldNotBlockOnSwitchInNewWriteStateMethodsAreInProgress() {
+        // todo: implement
+    }
+
+    @Test
     public void shouldNotSwitchStateUntilPreviousSwitchFinished() {
         // todo: implement
     }

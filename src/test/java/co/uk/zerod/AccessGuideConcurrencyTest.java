@@ -9,8 +9,12 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static co.uk.zerod.ReadState.ReadNew;
 import static co.uk.zerod.ReadWriteState.*;
+import static co.uk.zerod.WriteState.WriteBoth;
+import static co.uk.zerod.WriteState.WriteNew;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.Assert.assertThat;
 
@@ -33,49 +37,38 @@ public class AccessGuideConcurrencyTest {
     public void shouldBlockStateSwitchToIfActiveReaderHasDifferentReadState() throws Exception {
         AccessGuide guide = new AccessGuide(ReadOld_WriteBoth);
 
-        long timeoutDurationMs = 300;
-        CountDownLatch startReadTimeout = new CountDownLatch(1);
-
-        readOnNewThread(guide, readState -> {
-
-            startReadTimeout.await();
-            Thread.sleep(timeoutDurationMs);
-        });
+        long durationInMS = 300;
+        CountDownLatch readCountDown = submitStartableRead(guide, durationInMS);
 
         // When
         long startTime = System.currentTimeMillis();
-        startReadTimeout.countDown();
+        readCountDown.countDown();
 
         guide.switchState(ReadNew_WriteBoth);
 
         long duration = System.currentTimeMillis() - startTime;
 
         // Then
-        assertThat(duration, greaterThanOrEqualTo(timeoutDurationMs));
+        assertThat(duration, greaterThanOrEqualTo(durationInMS));
     }
 
     @Test
     public void shouldBlockStateSwitchToIfActiveWriterHasDifferentWriteState1() {
         AccessGuide guide = new AccessGuide(ReadOld_WriteOld);
 
-        long timeoutDurationMs = 300;
-        CountDownLatch startWriteTimeout = new CountDownLatch(1);
-        writeOnNewThread(guide, writeState -> {
-
-            startWriteTimeout.await();
-            Thread.sleep(timeoutDurationMs);
-        });
+        long durationInMS = 300;
+        CountDownLatch writeCountDown = submitStartableWrite(guide, durationInMS);
 
         // When
         long startTime = System.currentTimeMillis();
-        startWriteTimeout.countDown();
+        writeCountDown.countDown();
 
         guide.switchState(ReadOld_WriteBoth);
 
         long duration = System.currentTimeMillis() - startTime;
 
         // Then
-        assertThat(duration, greaterThanOrEqualTo(timeoutDurationMs));
+        assertThat(duration, greaterThanOrEqualTo(durationInMS));
     }
 
     @Test
@@ -83,42 +76,31 @@ public class AccessGuideConcurrencyTest {
         AccessGuide guide = new AccessGuide(ReadNew_WriteBoth);
 
 
-        long timeoutDurationMs = 300;
-        CountDownLatch startWriteTimeout = new CountDownLatch(1);
-        writeOnNewThread(guide, writeState -> {
-
-            startWriteTimeout.await();
-            Thread.sleep(timeoutDurationMs);
-        });
+        long durationInMS = 300;
+        CountDownLatch writeCountDown = submitStartableWrite(guide, durationInMS);
 
         // When
         long startTime = System.currentTimeMillis();
-        startWriteTimeout.countDown();
+        writeCountDown.countDown();
 
         guide.switchState(ReadNew_WriteNew);
 
         long duration = System.currentTimeMillis() - startTime;
 
         // Then
-        assertThat(duration, greaterThanOrEqualTo(timeoutDurationMs));
+        assertThat(duration, greaterThanOrEqualTo(durationInMS));
     }
 
     @Test
     public void shouldNotBlockStateSwitchIfActiveReadersHaveTheSameReadState1() {
         AccessGuide guide = new AccessGuide(ReadOld_WriteOld);
 
-        long timeoutDurationMs = 300;
-        CountDownLatch startReadTimeout = new CountDownLatch(1);
-
-        readOnNewThread(guide, readState -> {
-
-            startReadTimeout.await();
-            Thread.sleep(timeoutDurationMs);
-        });
+        long durationInMS = 300;
+        CountDownLatch readCountDown = submitStartableRead(guide, durationInMS);
 
         // When
         long startTime = System.currentTimeMillis();
-        startReadTimeout.countDown();
+        readCountDown.countDown();
 
         guide.switchState(ReadOld_WriteBoth);
 
@@ -132,18 +114,12 @@ public class AccessGuideConcurrencyTest {
     public void shouldNotBlockStateSwitchIfActiveReaderHaveTheSameReadState2() {
         AccessGuide guide = new AccessGuide(ReadNew_WriteBoth);
 
-        long timeoutDurationMs = 300;
-        CountDownLatch startReadTimeout = new CountDownLatch(1);
-
-        readOnNewThread(guide, readState -> {
-
-            startReadTimeout.await();
-            Thread.sleep(timeoutDurationMs);
-        });
+        long durationInMS = 300;
+        CountDownLatch readCountDown = submitStartableRead(guide, durationInMS);
 
         // When
         long startTime = System.currentTimeMillis();
-        startReadTimeout.countDown();
+        readCountDown.countDown();
 
         guide.switchState(ReadNew_WriteNew);
 
@@ -157,17 +133,12 @@ public class AccessGuideConcurrencyTest {
     public void shouldNotBlockStateSwitchIfActiveWritersHaveTheSameWriteState() {
         AccessGuide guide = new AccessGuide(ReadOld_WriteBoth);
 
-        long timeoutDurationMs = 300;
-        CountDownLatch startWriteTimeout = new CountDownLatch(1);
-        writeOnNewThread(guide, writeState -> {
-
-            startWriteTimeout.await();
-            Thread.sleep(timeoutDurationMs);
-        });
+        long durationInMS = 300;
+        CountDownLatch writeCountDown = submitStartableWrite(guide, durationInMS);
 
         // When
         long startTime = System.currentTimeMillis();
-        startWriteTimeout.countDown();
+        writeCountDown.countDown();
 
         guide.switchState(ReadNew_WriteBoth);
 
@@ -179,59 +150,107 @@ public class AccessGuideConcurrencyTest {
 
     @Test
     public void shouldUseNewReadStatusWhileSwitching() {
-        // todo: implement
+        AccessGuide guide = new AccessGuide(ReadOld_WriteBoth);
+
+        long durationInMS = 600;
+        submitStartableRead(guide, durationInMS)
+                .countDown();
+
+        // When
+        switchStateOnNewThread(guide, ReadNew_WriteBoth);
+        ReadState newlyUsedReadState = guide.read(readState -> readState);
+
+        // Then
+        assertThat(newlyUsedReadState, equalTo(ReadNew));
     }
 
     @Test
     public void shouldUseNewWriteStatusWhileSwitching1() {
-        // todo: implement
+        AccessGuide guide = new AccessGuide(ReadOld_WriteOld);
+
+        long durationInMS = 600;
+        submitStartableWrite(guide, durationInMS)
+                .countDown();
+
+        // When
+        switchStateOnNewThread(guide, ReadOld_WriteBoth);
+        WriteState newlyUsedWriteState = guide.write(writeState -> writeState);
+
+        // Then
+        assertThat(newlyUsedWriteState, equalTo(WriteBoth));
     }
 
     @Test
     public void shouldUseNewWriteStatusWhileSwitching2() {
-        // todo: implement
+        AccessGuide guide = new AccessGuide(ReadNew_WriteBoth);
+
+        long durationInMS = 600;
+        submitStartableWrite(guide, durationInMS)
+                .countDown();
+
+        // When
+        switchStateOnNewThread(guide, ReadNew_WriteNew);
+        WriteState newlyUsedWriteState = guide.write(writeState -> writeState);
+
+        // Then
+        assertThat(newlyUsedWriteState, equalTo(WriteNew));
+    }
+
+    @Test
+    public void shouldNotBeAbleToSwitchToNextStateBeforeThePreviousSwitchHasEnded() {
+        // todo: this is hard to test - but the switchState should be synchronized
     }
 
 
-    private void readOnNewThread(AccessGuide guide, DummyMethod<ReadState> reader) {
-        CountDownLatch enteredReadMethod = new CountDownLatch(1);
+    private CountDownLatch submitStartableRead(AccessGuide guide, long readDurationInMS) {
+        CountDownLatch readCoundown = new CountDownLatch(1);
+        CountDownLatch enteredGuidedMethod = new CountDownLatch(1);
         executor.submit(() -> guide.read(readState -> {
-            enteredReadMethod.countDown();
+            enteredGuidedMethod.countDown();
             try {
-                reader.apply(readState);
+                readCoundown.await();
+                Thread.sleep(readDurationInMS);
             } catch (Exception e) {
                 // do nothing
             }
             return null;
         }));
         try {
-            enteredReadMethod.await();
+            enteredGuidedMethod.await();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
+        return readCoundown;
     }
 
-    private void writeOnNewThread(AccessGuide guide, DummyMethod<WriteState> writer) {
-        CountDownLatch enteredWriteMethod = new CountDownLatch(1);
+    private CountDownLatch submitStartableWrite(AccessGuide guide, long writeDurationInMS) {
+        CountDownLatch writeCoundown = new CountDownLatch(1);
+        CountDownLatch enteredGuidedMethod = new CountDownLatch(1);
         executor.submit(() -> guide.write(writeState -> {
-            enteredWriteMethod.countDown();
+            enteredGuidedMethod.countDown();
             try {
-                writer.apply(writeState);
+                writeCoundown.await();
+                Thread.sleep(writeDurationInMS);
             } catch (Exception e) {
                 // do nothing
             }
             return null;
         }));
         try {
-            enteredWriteMethod.await();
+            enteredGuidedMethod.await();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        return writeCoundown;
     }
 
-
-    private interface DummyMethod<T> {
-
-        void apply(T param) throws Exception;
+    private void switchStateOnNewThread(AccessGuide guide, ReadWriteState newState) {
+        executor.submit(() -> guide.switchState(newState));
+        try {
+            Thread.sleep(50L);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

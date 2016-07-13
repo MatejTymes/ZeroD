@@ -31,7 +31,7 @@ Which way should be used for reads and writes will be resolved by ZeroD automati
 
 Also we would need to provide scripts that will be executed after all application nodes will reach a specific phase:
 
-| phase | migration script once all nodes reached the phase                                                          |
+| phase | migration script to execute once all nodes reached this phase                                              |
 |:-----:|------------------------------------------------------------------------------------------------------------|
 | 1.    | create new nullable db columns: `firstName` and `lastName`                                                 |
 | 2.    | for each record that misses values for `firstName` and `lastName` populate them using the `fullName` field |

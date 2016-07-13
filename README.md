@@ -27,14 +27,16 @@ In this case each of our newly deployed application nodes should be able to hand
 - the **old way** - where we read and write `fullName` db column
 - the **new way** - where we read and write `firstName` and `lastName` db columns.
 
-The notification of which approach should be used for reads and writes will be resolved by ZeroD automatically.
+Which way should be used for reads and writes will be resolved by ZeroD automatically.
 
-Also we would need to provide scripts that would be executed after all application nodes will reach a specific phase:
+Also we would need to provide scripts to execute after all application nodes will reach a specific phase:
 
-1. create optional db columns: `firstName` and `lastName`
-2. for each record that misses values for `firstName` and `lastName` populate them using the `fullName` field
-3. nothing
-4. delete db column: `fullName`
+| phase | migration script once all nodes reached the phase                                                          |
+|:-----:|------------------------------------------------------------------------------------------------------------|
+| 1.    | create new nullable db columns: `firstName` and `lastName`                                                 |
+| 2.    | for each record that misses values for `firstName` and `lastName` populate them using the `fullName` field |
+| 3.    | make new db columns non-nullable                                                                           |
+| 4.    | delete db column: `fullName`                                                                               |
 
 ZeroD will select which node should execute which script based on the actual stage of all application nodes.
 

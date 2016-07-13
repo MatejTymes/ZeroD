@@ -15,7 +15,7 @@ The phases are as follows:
 | 3.    | new way reads | old and new way writes |
 | 4.    | new way reads | new way writes         |
 
-Each time all application nodes reach next phase a migration script for the phase can be triggered. Once a migration script has finished nodes will be notified to move onto next phase. This continues until they reach the last one and the final migration script has finished.
+Each time all application nodes reach a certain phase a migration script for the phase can be triggered. Once a migration script has finished nodes will be notified to move onto next phase. This continues until they reach the last one and the final migration script has finished.
 
 ## Example scenario
 

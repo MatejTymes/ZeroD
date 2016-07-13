@@ -1,2 +1,2 @@
 # ZeroD
-ZeroDowntime automation
+Zero Downtime automation

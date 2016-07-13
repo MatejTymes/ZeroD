@@ -198,7 +198,21 @@ public class AccessGuideConcurrencyTest {
 
     @Test
     public void shouldNotBeAbleToSwitchToNextStateBeforeThePreviousSwitchHasEnded() {
-        // todo: this is hard to test - but the switchState should be synchronized
+        AccessGuide guide = new AccessGuide(ReadOld_WriteOld);
+
+        long durationInMS = 600;
+        submitStartableWrite(guide, durationInMS)
+                .countDown();
+        switchStateOnNewThread(guide, ReadOld_WriteBoth);
+
+        // When
+        long startTime = System.currentTimeMillis();
+        guide.switchState(ReadNew_WriteBoth);
+        long duration = System.currentTimeMillis() - startTime;
+
+        // Then
+        assertThat(duration, greaterThanOrEqualTo(400L));
+        assertThat(guide.getState(), equalTo(ReadNew_WriteBoth));
     }
 
 

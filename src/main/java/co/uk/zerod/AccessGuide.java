@@ -2,7 +2,6 @@ package co.uk.zerod;
 
 import java.util.function.Function;
 
-// todo: test concurrency
 public class AccessGuide {
 
     private ReadWriteState state;

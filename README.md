@@ -29,7 +29,7 @@ In this case each of our newly deployed application nodes should be able to hand
 
 Which way should be used for reads and writes will be resolved by ZeroD automatically.
 
-Also we would need to provide scripts to execute after all application nodes will reach a specific phase:
+Also we would need to provide scripts that should be run after all application nodes will reach a specific phase:
 
 | phase | migration script once all nodes reached the phase                                                          |
 |:-----:|------------------------------------------------------------------------------------------------------------|

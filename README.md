@@ -2,7 +2,7 @@
 
 ## About
 
-Current data migration is mostly painful and manual process. As it is not automated it can't be properly tested and as such most products require downtime to verify everything is ok.
+Currently the data migration is mostly painful and manual process. As it is not automated it can't be properly tested and as such most products require downtime to verify everything is ok.
 
 To avoid this I've designed migration phases where each is understandable and migration between them can be individually tested.
 
@@ -15,7 +15,7 @@ The phases are as follows:
 | 3.    | new way reads | old and new way writes |
 | 4.    | new way reads | new way writes         |
 
-Once all nodes reach a certain phase a migration script can be triggered. Once a migration script has finished nodes will be notified to move into next phase. This continues until they reach the last phase and the final migration script has finished.
+Each time all application nodes reach next phase a migration script for the phase can be triggered. Once a migration script has finished nodes will be notified to move onto next phase. This continues until they reach the last one and the final migration script has finished.
 
 ## Example scenario
 

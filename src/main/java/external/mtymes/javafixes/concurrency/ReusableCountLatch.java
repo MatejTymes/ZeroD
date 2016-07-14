@@ -1,4 +1,4 @@
-package co.uk.zerod;
+package external.mtymes.javafixes.concurrency;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;

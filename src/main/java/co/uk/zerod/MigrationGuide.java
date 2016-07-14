@@ -1,5 +1,7 @@
 package co.uk.zerod;
 
+import external.mtymes.javafixes.concurrency.ReusableCountLatch;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;

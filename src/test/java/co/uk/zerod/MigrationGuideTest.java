@@ -30,7 +30,8 @@ public class MigrationGuideTest {
             WriteState usedWriteState = actualWriteState(migrationGuide);
 
             // Then
-            assertThat(migrationGuide.getState(), equalTo(readWriteState));
+            assertThat(migrationGuide.getCurrentState(), equalTo(readWriteState));
+            assertThat(migrationGuide.getTransitionToState(), equalTo(readWriteState));
             assertThat(usedReadState, equalTo(readWriteState.readState));
             assertThat(usedWriteState, equalTo(readWriteState.writeState));
         }
@@ -65,17 +66,20 @@ public class MigrationGuideTest {
         MigrationGuide migrationGuide = new MigrationGuide(ReadOld_WriteOld);
 
         migrationGuide.switchState(ReadOld_WriteBoth);
-        assertThat(migrationGuide.getState(), equalTo(ReadOld_WriteBoth));
+        assertThat(migrationGuide.getCurrentState(), equalTo(ReadOld_WriteBoth));
+        assertThat(migrationGuide.getTransitionToState(), equalTo(ReadOld_WriteBoth));
         assertThat(actualReadState(migrationGuide), equalTo(ReadOld));
         assertThat(actualWriteState(migrationGuide), equalTo(WriteBoth));
 
         migrationGuide.switchState(ReadNew_WriteBoth);
-        assertThat(migrationGuide.getState(), equalTo(ReadNew_WriteBoth));
+        assertThat(migrationGuide.getCurrentState(), equalTo(ReadNew_WriteBoth));
+        assertThat(migrationGuide.getTransitionToState(), equalTo(ReadNew_WriteBoth));
         assertThat(actualReadState(migrationGuide), equalTo(ReadNew));
         assertThat(actualWriteState(migrationGuide), equalTo(WriteBoth));
 
         migrationGuide.switchState(ReadNew_WriteNew);
-        assertThat(migrationGuide.getState(), equalTo(ReadNew_WriteNew));
+        assertThat(migrationGuide.getCurrentState(), equalTo(ReadNew_WriteNew));
+        assertThat(migrationGuide.getTransitionToState(), equalTo(ReadNew_WriteNew));
         assertThat(actualReadState(migrationGuide), equalTo(ReadNew));
         assertThat(actualWriteState(migrationGuide), equalTo(WriteNew));
     }
@@ -90,7 +94,8 @@ public class MigrationGuideTest {
             migrationGuide.switchState(readWriteState);
 
             // Then
-            assertThat(migrationGuide.getState(), equalTo(readWriteState));
+            assertThat(migrationGuide.getCurrentState(), equalTo(readWriteState));
+            assertThat(migrationGuide.getTransitionToState(), equalTo(readWriteState));
         }
     }
 

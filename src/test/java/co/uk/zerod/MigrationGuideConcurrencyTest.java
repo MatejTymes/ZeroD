@@ -207,6 +207,21 @@ public class MigrationGuideConcurrencyTest {
     }
 
     @Test
+    public void shouldHaveDifferentCurrentAndTransitionToStateIfSwitchHasNotCompleted() {
+        MigrationGuide guide = new MigrationGuide(ReadOld_WriteBoth);
+
+        // When
+        long durationInMS = 600;
+        submitStartableRead(guide, durationInMS)
+                .countDown();
+        switchStateOnNewThread(guide, ReadNew_WriteBoth);
+
+        // Then
+        assertThat(guide.getCurrentState(), equalTo(ReadOld_WriteBoth));
+        assertThat(guide.getTransitionToState(), equalTo(ReadNew_WriteBoth));
+    }
+
+    @Test
     public void shouldNotBeAbleToSwitchToNextStateBeforeThePreviousSwitchHasEnded() {
         MigrationGuide guide = new MigrationGuide(ReadOld_WriteOld);
 
@@ -216,13 +231,15 @@ public class MigrationGuideConcurrencyTest {
         switchStateOnNewThread(guide, ReadOld_WriteBoth);
 
         // When
+
         long startTime = System.currentTimeMillis();
         guide.switchState(ReadNew_WriteBoth);
         long duration = System.currentTimeMillis() - startTime;
 
         // Then
         assertThat(duration, greaterThanOrEqualTo(400L));
-        assertThat(guide.getState(), equalTo(ReadNew_WriteBoth));
+        assertThat(guide.getCurrentState(), equalTo(ReadNew_WriteBoth));
+        assertThat(guide.getTransitionToState(), equalTo(ReadNew_WriteBoth));
     }
 
 

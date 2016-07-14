@@ -49,10 +49,6 @@ public class MigrationGuide {
         }
     }
 
-    public ReadWriteState getState() {
-        return currentState;
-    }
-
     public synchronized void switchState(ReadWriteState toState) {
         if (currentState.ordinal() != toState.ordinal() && currentState.ordinal() + 1 != toState.ordinal()) {
             throw new IllegalStateException("Unable to transition from '" + currentState + "' state to '" + toState + "' state");
@@ -72,5 +68,13 @@ public class MigrationGuide {
         }
 
         this.currentState = toState;
+    }
+
+    ReadWriteState getCurrentState() {
+        return currentState;
+    }
+
+    ReadWriteState getTransitionToState() {
+        return transitionToState;
     }
 }

@@ -4,7 +4,7 @@
 
 Currently the data migration is mostly painful and manual process. As it is not automated it can't be properly tested and as such most products require downtime to verify everything is ok.
 
-To avoid this I've designed migration phases where each is understandable and migration between them can be individually tested.
+To avoid this I've designed migration phases where each can be automated, is understandable and migration between them can be individually tested.
 
 The phases are as follows:
 

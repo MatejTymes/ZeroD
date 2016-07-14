@@ -17,115 +17,111 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-public class AccessGuideTest {
+public class MigrationGuideTest {
 
     @Test
     public void shouldProvideProperReadAndWriteState() {
         for (ReadWriteState readWriteState : ReadWriteState.values()) {
 
-            AccessGuide accessGuide = new AccessGuide(readWriteState);
+            MigrationGuide migrationGuide = new MigrationGuide(readWriteState);
 
             // When
-            ReadState usedReadState = actualReadState(accessGuide);
-            WriteState usedWriteState = actualWriteState(accessGuide);
+            ReadState usedReadState = actualReadState(migrationGuide);
+            WriteState usedWriteState = actualWriteState(migrationGuide);
 
             // Then
-            assertThat(accessGuide.getState(), equalTo(readWriteState));
+            assertThat(migrationGuide.getState(), equalTo(readWriteState));
             assertThat(usedReadState, equalTo(readWriteState.readState));
             assertThat(usedWriteState, equalTo(readWriteState.writeState));
         }
     }
 
-
     @Test
     public void shouldReturnValueReadValue() {
-        AccessGuide accessGuide = new AccessGuide(randomReadWriteState());
+        MigrationGuide migrationGuide = new MigrationGuide(randomReadWriteState());
         UUID expectedResponse = randomUUID();
 
         // When
-        UUID readResponse = accessGuide.read(readState -> expectedResponse);
+        UUID readResponse = migrationGuide.read(readState -> expectedResponse);
 
         // Then
         assertThat(readResponse, equalTo(expectedResponse));
     }
 
-
     @Test
     public void shouldProvideProperWriteState() {
-        AccessGuide accessGuide = new AccessGuide(randomReadWriteState());
+        MigrationGuide migrationGuide = new MigrationGuide(randomReadWriteState());
         UUID expectedResponse = randomUUID();
 
         // When
-        UUID writeResponse = accessGuide.write(writeState -> expectedResponse);
+        UUID writeResponse = migrationGuide.write(writeState -> expectedResponse);
 
         // Then
         assertThat(writeResponse, equalTo(expectedResponse));
     }
 
-
     @Test
     public void shouldBeAbleToSwitchToNextState() {
-        AccessGuide accessGuide = new AccessGuide(ReadOld_WriteOld);
+        MigrationGuide migrationGuide = new MigrationGuide(ReadOld_WriteOld);
 
-        accessGuide.switchState(ReadOld_WriteBoth);
-        assertThat(accessGuide.getState(), equalTo(ReadOld_WriteBoth));
-        assertThat(actualReadState(accessGuide), equalTo(ReadOld));
-        assertThat(actualWriteState(accessGuide), equalTo(WriteBoth));
+        migrationGuide.switchState(ReadOld_WriteBoth);
+        assertThat(migrationGuide.getState(), equalTo(ReadOld_WriteBoth));
+        assertThat(actualReadState(migrationGuide), equalTo(ReadOld));
+        assertThat(actualWriteState(migrationGuide), equalTo(WriteBoth));
 
-        accessGuide.switchState(ReadNew_WriteBoth);
-        assertThat(accessGuide.getState(), equalTo(ReadNew_WriteBoth));
-        assertThat(actualReadState(accessGuide), equalTo(ReadNew));
-        assertThat(actualWriteState(accessGuide), equalTo(WriteBoth));
+        migrationGuide.switchState(ReadNew_WriteBoth);
+        assertThat(migrationGuide.getState(), equalTo(ReadNew_WriteBoth));
+        assertThat(actualReadState(migrationGuide), equalTo(ReadNew));
+        assertThat(actualWriteState(migrationGuide), equalTo(WriteBoth));
 
-        accessGuide.switchState(ReadNew_WriteNew);
-        assertThat(accessGuide.getState(), equalTo(ReadNew_WriteNew));
-        assertThat(actualReadState(accessGuide), equalTo(ReadNew));
-        assertThat(actualWriteState(accessGuide), equalTo(WriteNew));
+        migrationGuide.switchState(ReadNew_WriteNew);
+        assertThat(migrationGuide.getState(), equalTo(ReadNew_WriteNew));
+        assertThat(actualReadState(migrationGuide), equalTo(ReadNew));
+        assertThat(actualWriteState(migrationGuide), equalTo(WriteNew));
     }
 
     @Test
     public void shouldBeAbleToSwitchToTheSameState() {
         for (ReadWriteState readWriteState : ReadWriteState.values()) {
 
-            AccessGuide accessGuide = new AccessGuide(readWriteState);
+            MigrationGuide migrationGuide = new MigrationGuide(readWriteState);
 
             // When
-            accessGuide.switchState(readWriteState);
+            migrationGuide.switchState(readWriteState);
 
             // Then
-            assertThat(accessGuide.getState(), equalTo(readWriteState));
+            assertThat(migrationGuide.getState(), equalTo(readWriteState));
         }
     }
-
 
     @Test
     public void shouldFailOnInvalidStateTransition() {
-        AccessGuide accessGuide;
+        MigrationGuide migrationGuide;
 
-        accessGuide = new AccessGuide(ReadOld_WriteOld);
+        migrationGuide = new MigrationGuide(ReadOld_WriteOld);
         for (ReadWriteState invalidTransitionalStates : asList(ReadNew_WriteBoth, ReadNew_WriteNew)) {
             try {
-                accessGuide.switchState(invalidTransitionalStates);
+                migrationGuide.switchState(invalidTransitionalStates);
                 fail("expected IllegalStateException");
             } catch (IllegalStateException expected) {
                 // do nothing
             }
         }
 
-        accessGuide = new AccessGuide(ReadOld_WriteBoth);
+        migrationGuide = new MigrationGuide(ReadOld_WriteBoth);
         for (ReadWriteState invalidTransitionalStates : asList(ReadOld_WriteOld, ReadNew_WriteNew)) {
             try {
-                accessGuide.switchState(invalidTransitionalStates);
+                migrationGuide.switchState(invalidTransitionalStates);
                 fail("expected IllegalStateException");
             } catch (IllegalStateException expected) {
                 // do nothing
             }
         }
 
-        accessGuide = new AccessGuide(ReadNew_WriteNew);
+        migrationGuide = new MigrationGuide(ReadNew_WriteNew);
         for (ReadWriteState invalidTransitionalStates : asList(ReadOld_WriteOld, ReadOld_WriteBoth)) {
             try {
-                accessGuide.switchState(invalidTransitionalStates);
+                migrationGuide.switchState(invalidTransitionalStates);
                 fail("expected IllegalStateException");
             } catch (IllegalStateException expected) {
                 // do nothing
@@ -134,9 +130,9 @@ public class AccessGuideTest {
     }
 
 
-    private ReadState actualReadState(AccessGuide accessGuide) {
+    private ReadState actualReadState(MigrationGuide migrationGuide) {
         AtomicReference<ReadState> readStateToUse = new AtomicReference<>(null);
-        accessGuide.read(readState -> {
+        migrationGuide.read(readState -> {
             readStateToUse.set(readState);
             return null;
         });
@@ -144,9 +140,9 @@ public class AccessGuideTest {
     }
 
 
-    private WriteState actualWriteState(AccessGuide accessGuide) {
+    private WriteState actualWriteState(MigrationGuide migrationGuide) {
         AtomicReference<WriteState> writeStateToUse = new AtomicReference<>(null);
-        accessGuide.write(writeState -> {
+        migrationGuide.write(writeState -> {
             writeStateToUse.set(writeState);
             return null;
         });

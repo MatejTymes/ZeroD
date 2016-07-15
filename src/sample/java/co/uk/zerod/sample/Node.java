@@ -19,7 +19,7 @@ public class Node {
     public static Node startNode(VersionedStore<UserId> storage) {
         MigrationCoordinator coordinator = new MigrationCoordinator();
 
-        coordinator.registerMigrationStepsFor(
+        coordinator.registerMigration(
                 FULL_NAME_MIGRATION,
                 migrationStepsBuilder()
                         .toBeAbleToReadNew(() -> addMissingFirstAndLastNameValues(storage))
@@ -27,9 +27,8 @@ public class Node {
                         .build()
         );
 
-        UserDao userDao = new UserDao(storage, coordinator.getAccessGuide());
-
-        return new Node(userDao);
+        return new Node(
+                new UserDao(storage, coordinator.getAccessGuide()));
     }
 
 }

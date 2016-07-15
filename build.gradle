@@ -9,9 +9,17 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    sample {
+        compileClasspath += main.output
+    }
+}
+
 dependencies {
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.hamcrest:hamcrest-all:1.3'
 
+    sampleCompile 'org.apache.commons:commons-lang3:3.4'
+    sampleCompile 'com.google.guava:guava:19.0'
 }

@@ -11,7 +11,7 @@ public class MigrationCoordinator {
     }
 
     // todo: test
-    public void registerMigrationHandler(MigrationId migrationId, MigrationConfig migrationConfig) {
+    public void registerMigrationStepsFor(MigrationId migrationId, MigrationSteps migrationSteps) {
         // todo: implement
         throw new UnsupportedOperationException("implement");
     }

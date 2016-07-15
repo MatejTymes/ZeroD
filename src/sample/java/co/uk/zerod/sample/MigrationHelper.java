@@ -13,7 +13,7 @@ public class MigrationHelper {
 
     public static final MigrationId FULL_NAME_MIGRATION = migrationId("fullNameMigration");
 
-    public static void backpopulateFirstAndLastNameFields(VersionedStore<UserId> storage) {
+    public static void addMissingFirstAndLastNameValues(VersionedStore<UserId> storage) {
         for (UserId userId : storage.keySet()) {
 
             storage.conditionalUpdate(userId, userValues -> {
@@ -34,7 +34,7 @@ public class MigrationHelper {
         }
     }
 
-    public static void removeOldFullNameField(VersionedStore<UserId> storage) {
+    public static void removeFullNameField(VersionedStore<UserId> storage) {
         for (UserId userId : storage.keySet()) {
 
             storage.conditionalUpdate(userId, userValues -> {

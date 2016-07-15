@@ -6,7 +6,7 @@ import co.uk.zerod.sample.domain.UserId;
 import co.uk.zerod.wip.MigrationCoordinator;
 
 import static co.uk.zerod.sample.MigrationHelper.*;
-import static co.uk.zerod.wip.MigrationConfigBuilder.migrationConfigBuilder;
+import static co.uk.zerod.wip.MigrationStepsBuilder.migrationStepsBuilder;
 
 public class Node {
 
@@ -19,11 +19,11 @@ public class Node {
     public static Node startNode(VersionedStore<UserId> storage) {
         MigrationCoordinator coordinator = new MigrationCoordinator();
 
-        coordinator.registerMigrationHandler(
+        coordinator.registerMigrationStepsFor(
                 FULL_NAME_MIGRATION,
-                migrationConfigBuilder()
-                        .toBeAbleToReadNew(() -> backpopulateFirstAndLastNameFields(storage))
-                        .onceWeReadAndWriteOnlyNew(() -> removeOldFullNameField(storage))
+                migrationStepsBuilder()
+                        .toBeAbleToReadNew(() -> addMissingFirstAndLastNameValues(storage))
+                        .onceWeReadAndWriteOnlyNew(() -> removeFullNameField(storage))
                         .build()
         );
 

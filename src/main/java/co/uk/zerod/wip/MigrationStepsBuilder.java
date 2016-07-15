@@ -5,39 +5,39 @@ import external.mtymes.javafixes.concurrency.Task;
 
 import static co.uk.zerod.ReadWriteState.*;
 
-public class MigrationConfigBuilder {
+public class MigrationStepsBuilder {
 
     // todo: should be able to register phase
     // pre-migration code  - all nodes will run it
     // migration code      - only single node will run it
     // post-migration code - all nodes will run it
 
-    public static MigrationConfigBuilder migrationConfigBuilder() {
-        return new MigrationConfigBuilder();
+    public static MigrationStepsBuilder migrationStepsBuilder() {
+        return new MigrationStepsBuilder();
     }
 
-    public MigrationConfigBuilder afterPhase(ReadWriteState state, Task task) {
+    public MigrationStepsBuilder afterPhase(ReadWriteState state, Task task) {
         // todo: implement
         throw new UnsupportedOperationException("implement");
     }
 
-    public MigrationConfigBuilder toBeAbleToWriteOldAndNew(Task task) {
+    public MigrationStepsBuilder toBeAbleToWriteOldAndNew(Task task) {
         return afterPhase(ReadOld_WriteOld, task);
     }
 
-    public MigrationConfigBuilder toBeAbleToReadNew(Task task) {
+    public MigrationStepsBuilder toBeAbleToReadNew(Task task) {
         return afterPhase(ReadOld_WriteBoth, task);
     }
 
-    public MigrationConfigBuilder toBeAbleToNotWriteNew(Task task) {
+    public MigrationStepsBuilder toBeAbleToNotWriteNew(Task task) {
         return afterPhase(ReadNew_WriteBoth, task);
     }
 
-    public MigrationConfigBuilder onceWeReadAndWriteOnlyNew(Task task) {
+    public MigrationStepsBuilder onceWeReadAndWriteOnlyNew(Task task) {
         return afterPhase(ReadNew_WriteNew, task);
     }
 
-    public MigrationConfig build() {
+    public MigrationSteps build() {
         // todo: implement
         throw new UnsupportedOperationException("implement");
     }

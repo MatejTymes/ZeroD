@@ -1,6 +1,7 @@
 package co.uk.zerod.dao;
 
 import co.uk.zerod.wip.MigrationId;
+import external.mtymes.javafixes.concurrency.Runner;
 import org.junit.Test;
 
 import javax.sql.DataSource;
@@ -12,6 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static co.uk.zerod.domain.TableName.tableName;
 import static co.uk.zerod.wip.MigrationId.migrationId;
 import static com.google.common.collect.Sets.newHashSet;
+import static external.mtymes.javafixes.concurrency.Runner.runner;
 import static java.util.UUID.randomUUID;
 import static java.util.concurrent.Executors.newScheduledThreadPool;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -80,39 +82,71 @@ public abstract class SqlMigrationDaoTestBase {
     }
 
     @Test
-    public void shouldNotFailIfTheSameMigrationIsRegisteredConcurrently() throws Exception {
-        // todo: use Runner from JavaFixes to simplify this test
+    public void shouldNotFailIfTheSameMigrationIsRegisteredConcurrentlyOld() throws Exception {
         int concurrentThreadCount = 30;
-        int retryCount = 50;
+        int attemptsCount = 10;
         ScheduledExecutorService executor = newScheduledThreadPool(concurrentThreadCount);
 
-        for (int attempt = 0; attempt < retryCount; attempt++) {
-            MigrationId migrationId = randomMigrationId();
+        try {
+            for (int attempt = 1; attempt <= attemptsCount; attempt++) {
+                MigrationId migrationId = randomMigrationId();
 
-            CyclicBarrier startBarrier = new CyclicBarrier(concurrentThreadCount);
-            CountDownLatch finishedCounter = new CountDownLatch(concurrentThreadCount);
-            AtomicInteger errorCount = new AtomicInteger(0);
+                CyclicBarrier synchronizedStartBarrier = new CyclicBarrier(concurrentThreadCount);
+                CountDownLatch finishedCounter = new CountDownLatch(concurrentThreadCount);
+                AtomicInteger errorCount = new AtomicInteger(0);
 
-            for (int i = 0; i < concurrentThreadCount; i++) {
-                executor.submit(() -> {
-                    try {
-                        startBarrier.await();
+                for (int i = 0; i < concurrentThreadCount; i++) {
+                    executor.submit(() -> {
+                        try {
+                            synchronizedStartBarrier.await();
+
+                            dao.registerMigration(migrationId);
+
+                        } catch (Exception e) {
+                            errorCount.incrementAndGet();
+                            e.printStackTrace();
+                        } finally {
+                            finishedCounter.countDown();
+                        }
+                        return null;
+                    });
+                }
+
+                finishedCounter.await();
+
+                assertThat(attempt + ". attempt - there should be no failures", errorCount.get(), is(0));
+            }
+        } finally {
+            executor.shutdownNow();
+        }
+    }
+
+    @Test
+    public void shouldNotFailIfTheSameMigrationIsRegisteredConcurrentlyNew() throws Exception {
+        int concurrentThreadCount = 30;
+        int attemptsCount = 10;
+
+        Runner runner = runner(concurrentThreadCount);
+
+        try {
+            for (int attempt = 1; attempt <= attemptsCount; attempt++) {
+                MigrationId migrationId = randomMigrationId();
+
+                CyclicBarrier synchronizedStartBarrier = new CyclicBarrier(concurrentThreadCount);
+
+                for (int i = 0; i < concurrentThreadCount; i++) {
+                    runner.runTask(() -> {
+                        synchronizedStartBarrier.await();
 
                         dao.registerMigration(migrationId);
+                    });
+                }
+                runner.waitTillDone();
 
-                    } catch (Exception e) {
-                        errorCount.incrementAndGet();
-                        e.printStackTrace();
-                    } finally {
-                        finishedCounter.countDown();
-                    }
-                    return null;
-                });
+                assertThat(attempt + ". attempt - there should be no failures", runner.failedCount(), is(0));
             }
-
-            finishedCounter.await();
-
-            assertThat(errorCount.get(), is(0));
+        } finally {
+            runner.shutdownNow();
         }
     }
 

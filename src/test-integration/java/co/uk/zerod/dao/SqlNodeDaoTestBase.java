@@ -9,6 +9,7 @@ import java.time.ZonedDateTime;
 import java.util.Set;
 
 import static co.uk.zerod.domain.NodeName.nodeName;
+import static co.uk.zerod.domain.TableName.tableName;
 import static com.google.common.collect.Sets.newHashSet;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -19,7 +20,7 @@ public abstract class SqlNodeDaoTestBase {
 
     private Clock clock = new Clock();
 
-    private SqlNodeDao dao = new SqlNodeDao(getDataSource(), clock);
+    private SqlNodeDao dao = new SqlNodeDao(tableName("node"), getDataSource(), clock);
 
     @Test
     public void shouldNotFindLiveNodesInEmptyDb() {

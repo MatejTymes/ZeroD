@@ -91,10 +91,10 @@ public abstract class SqlMigrationDaoTestBase {
             for (int attempt = 1; attempt <= attemptsCount; attempt++) {
                 MigrationId migrationId = randomMigrationId();
 
+                // When
                 CyclicBarrier synchronizedStartBarrier = new CyclicBarrier(concurrentThreadCount);
                 CountDownLatch finishedCounter = new CountDownLatch(concurrentThreadCount);
                 AtomicInteger errorCount = new AtomicInteger(0);
-
                 for (int i = 0; i < concurrentThreadCount; i++) {
                     executor.submit(() -> {
                         try {
@@ -111,10 +111,14 @@ public abstract class SqlMigrationDaoTestBase {
                         return null;
                     });
                 }
-
                 finishedCounter.await();
 
-                assertThat(attempt + ". attempt - there should be no failures", errorCount.get(), is(0));
+                // Then
+                assertThat(
+                        attempt + ". attempt - there should be no failures",
+
+                        errorCount.get(), is(0)
+                );
             }
         } finally {
             executor.shutdownNow();
@@ -132,8 +136,8 @@ public abstract class SqlMigrationDaoTestBase {
             for (int attempt = 1; attempt <= attemptsCount; attempt++) {
                 MigrationId migrationId = randomMigrationId();
 
+                // When
                 CyclicBarrier synchronizedStartBarrier = new CyclicBarrier(concurrentThreadCount);
-
                 for (int i = 0; i < concurrentThreadCount; i++) {
                     runner.runTask(() -> {
                         synchronizedStartBarrier.await();
@@ -143,7 +147,12 @@ public abstract class SqlMigrationDaoTestBase {
                 }
                 runner.waitTillDone();
 
-                assertThat(attempt + ". attempt - there should be no failures", runner.failedCount(), is(0));
+                // Then
+                assertThat(
+                        attempt + ". attempt - there should be no failures",
+
+                        runner.failedCount(), is(0)
+                );
             }
         } finally {
             runner.shutdownNow();

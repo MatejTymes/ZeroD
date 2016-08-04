@@ -5,17 +5,13 @@ import external.mtymes.javafixes.concurrency.Runner;
 import org.junit.Test;
 
 import javax.sql.DataSource;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static co.uk.zerod.domain.TableName.tableName;
 import static co.uk.zerod.test.Random.randomMigrationId;
 import static co.uk.zerod.wip.MigrationId.migrationId;
 import static com.google.common.collect.Sets.newHashSet;
 import static external.mtymes.javafixes.concurrency.Runner.runner;
-import static java.util.concurrent.Executors.newScheduledThreadPool;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.empty;
@@ -82,53 +78,9 @@ public abstract class SqlMigrationDaoTestBase {
     }
 
     @Test
-    public void shouldNotFailIfTheSameMigrationIsRegisteredConcurrentlyOld() throws Exception {
-        int concurrentThreadCount = 30;
+    public void shouldNotFailIfTheSameMigrationIsRegisteredConcurrently() throws Exception {
         int attemptsCount = 10;
-        ScheduledExecutorService executor = newScheduledThreadPool(concurrentThreadCount);
-
-        try {
-            for (int attempt = 1; attempt <= attemptsCount; attempt++) {
-                MigrationId migrationId = randomMigrationId();
-
-                // When
-                CyclicBarrier synchronizedStartBarrier = new CyclicBarrier(concurrentThreadCount);
-                CountDownLatch finishedCounter = new CountDownLatch(concurrentThreadCount);
-                AtomicInteger errorCount = new AtomicInteger(0);
-                for (int i = 0; i < concurrentThreadCount; i++) {
-                    executor.submit(() -> {
-                        try {
-                            synchronizedStartBarrier.await();
-
-                            dao.registerMigration(migrationId);
-
-                        } catch (Exception e) {
-                            errorCount.incrementAndGet();
-                            e.printStackTrace();
-                        } finally {
-                            finishedCounter.countDown();
-                        }
-                        return null;
-                    });
-                }
-                finishedCounter.await();
-
-                // Then
-                assertThat(
-                        attempt + ". attempt - there should be no failures",
-
-                        errorCount.get(), is(0)
-                );
-            }
-        } finally {
-            executor.shutdownNow();
-        }
-    }
-
-    @Test
-    public void shouldNotFailIfTheSameMigrationIsRegisteredConcurrentlyNew() throws Exception {
         int concurrentThreadCount = 30;
-        int attemptsCount = 10;
 
         Runner runner = runner(concurrentThreadCount);
 

@@ -9,7 +9,7 @@ import javax.sql.DataSource;
 
 import static co.uk.zerod.test.db.EmbeddedDb.createDb;
 
-public class H2SqlNodeDaoTest extends SqlNodeDaoTestBase {
+public class H2SqlAgentDaoTest extends SqlAgentDaoTestBase {
 
     private static EmbeddedDb db;
     private static DataSource dataSource;

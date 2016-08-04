@@ -1,7 +1,7 @@
 package co.uk.zerod.dao;
 
 import co.uk.zerod.common.Clock;
-import co.uk.zerod.domain.NodeName;
+import co.uk.zerod.domain.AgentName;
 import co.uk.zerod.domain.TableName;
 
 import javax.sql.DataSource;
@@ -9,27 +9,27 @@ import java.sql.*;
 import java.time.ZonedDateTime;
 import java.util.Set;
 
-import static co.uk.zerod.domain.NodeName.nodeName;
+import static co.uk.zerod.domain.AgentName.agentName;
 import static com.google.common.collect.Sets.newHashSet;
 
-public class SqlNodeDao implements NodeDao {
+public class SqlAgentDao implements AgentDao {
 
-    private final TableName nodeTableName;
+    private final TableName agentTableName;
 
     private final DataSource dataSource;
     private final Clock clock;
 
-    public SqlNodeDao(TableName nodeTableName, DataSource dataSource, Clock clock) {
-        this.nodeTableName = nodeTableName;
+    public SqlAgentDao(TableName agentTableName, DataSource dataSource, Clock clock) {
+        this.agentTableName = agentTableName;
         this.dataSource = dataSource;
         this.clock = clock;
     }
 
     @Override
-    public void registerHeartBeatFor(NodeName nodeName) {
+    public void registerHeartBeatFor(AgentName agentName) {
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement selectStatement = connection.prepareStatement("SELECT * FROM " + nodeTableName + " WHERE node_name = ?");
-            selectStatement.setString(1, nodeName.value());
+            PreparedStatement selectStatement = connection.prepareStatement("SELECT * FROM " + agentTableName + " WHERE name = ?");
+            selectStatement.setString(1, agentName.value());
             boolean exists;
             try (ResultSet rs = selectStatement.executeQuery()) {
                 exists = rs.next();
@@ -37,8 +37,8 @@ public class SqlNodeDao implements NodeDao {
 
             boolean insertionFailed = false;
             if (!exists) {
-                PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO " + nodeTableName + " (node_name, last_heart_beat) VALUES (?, ?)");
-                insertStatement.setString(1, nodeName.value());
+                PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO " + agentTableName + " (name, last_heart_beat) VALUES (?, ?)");
+                insertStatement.setString(1, agentName.value());
                 insertStatement.setTimestamp(2, toTimeStamp(clock.now()));
                 try {
                     insertionFailed = (insertStatement.executeUpdate() != 1);
@@ -48,11 +48,11 @@ public class SqlNodeDao implements NodeDao {
             }
 
             if (exists || insertionFailed) {
-                PreparedStatement updateStatement = connection.prepareStatement("UPDATE " + nodeTableName + " SET last_heart_beat = ? WHERE node_name = ?");
+                PreparedStatement updateStatement = connection.prepareStatement("UPDATE " + agentTableName + " SET last_heart_beat = ? WHERE name = ?");
                 updateStatement.setTimestamp(1, toTimeStamp(clock.now()));
-                updateStatement.setString(2, nodeName.value());
+                updateStatement.setString(2, agentName.value());
                 if (updateStatement.executeUpdate() != 1) {
-                    throw new IllegalStateException("Unable to register node '" + nodeName + "' as active node.");
+                    throw new IllegalStateException("Unable to register agent '" + agentName + "' as active agent.");
                 }
             }
 
@@ -62,20 +62,20 @@ public class SqlNodeDao implements NodeDao {
     }
 
     @Override
-    public Set<NodeName> findNodesAliveSince(ZonedDateTime activeSince) {
+    public Set<AgentName> findAgentsAliveSince(ZonedDateTime activeSince) {
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + nodeTableName + " WHERE last_heart_beat >= ?");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + agentTableName + " WHERE last_heart_beat >= ?");
             ps.setTimestamp(1, toTimeStamp(activeSince));
 
-            Set<NodeName> liveNodes = newHashSet();
+            Set<AgentName> liveAgents = newHashSet();
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    liveNodes.add(nodeName(rs.getString("node_name")));
+                    liveAgents.add(agentName(rs.getString("name")));
                 }
             }
 
-            return liveNodes;
+            return liveAgents;
 
         } catch (SQLException e) {
             throw new IllegalArgumentException(e);

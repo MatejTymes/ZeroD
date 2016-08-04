@@ -8,9 +8,9 @@ import static co.uk.zerod.ReadWriteState.*;
 public class MigrationStepsBuilder {
 
     // todo: should be able to register phase
-    // pre-migration code  - all nodes will run it
-    // migration code      - only single node will run it
-    // post-migration code - all nodes will run it
+    // pre-migration code  - all agents will run it
+    // migration code      - only single agent will run it
+    // post-migration code - all agents will run it
 
     public static MigrationStepsBuilder migrationStepsBuilder() {
         return new MigrationStepsBuilder();

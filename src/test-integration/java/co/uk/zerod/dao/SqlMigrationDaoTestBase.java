@@ -11,10 +11,10 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static co.uk.zerod.domain.TableName.tableName;
+import static co.uk.zerod.test.Random.randomMigrationId;
 import static co.uk.zerod.wip.MigrationId.migrationId;
 import static com.google.common.collect.Sets.newHashSet;
 import static external.mtymes.javafixes.concurrency.Runner.runner;
-import static java.util.UUID.randomUUID;
 import static java.util.concurrent.Executors.newScheduledThreadPool;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -157,11 +157,6 @@ public abstract class SqlMigrationDaoTestBase {
         } finally {
             runner.shutdownNow();
         }
-    }
-
-    // todo: move into some util class
-    private static MigrationId randomMigrationId() {
-        return migrationId(randomUUID().toString());
     }
 
 

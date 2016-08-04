@@ -7,6 +7,7 @@ import java.util.Set;
 
 public interface AgentDao {
 
+    // todo: add concurrency test
     void registerHeartBeatFor(AgentName agentName);
 
     Set<AgentName> findAgentsAliveSince(ZonedDateTime activeSince);

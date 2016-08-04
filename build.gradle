@@ -38,6 +38,7 @@ testSets {
 dependencies {
 
     compile 'com.google.guava:guava:19.0'
+    compile 'org.apache.commons:commons-lang3:3.4'
 
     sampleCompile 'org.apache.commons:commons-lang3:3.4'
     sampleCompile 'com.google.guava:guava:19.0'

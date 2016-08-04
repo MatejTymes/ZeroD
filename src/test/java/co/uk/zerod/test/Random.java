@@ -4,6 +4,7 @@ import co.uk.zerod.ReadWriteState;
 
 import java.util.List;
 
+// todo: merge both Randoms into one test code
 public class Random {
 
     public static int randomInt(int from, int to) {

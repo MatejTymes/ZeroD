@@ -5,6 +5,7 @@ import co.uk.zerod.wip.MigrationId;
 import static co.uk.zerod.wip.MigrationId.migrationId;
 import static java.util.UUID.randomUUID;
 
+// todo: merge both Randoms into one test code
 public class Random {
 
     public static String randomUUIDString() {

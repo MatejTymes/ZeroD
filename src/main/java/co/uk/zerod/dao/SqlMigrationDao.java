@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.util.Set;
 
 import static co.uk.zerod.wip.MigrationId.migrationId;
-import static com.google.common.collect.Sets.newHashSet;
 
 public class SqlMigrationDao extends BaseSqlDao implements MigrationDao {
 
@@ -57,19 +56,9 @@ public class SqlMigrationDao extends BaseSqlDao implements MigrationDao {
 
     @Override
     public Set<MigrationId> findAllMigrations() {
-        try (Connection connection = dataSource.getConnection()) {
-            Set<MigrationId> migrationIds = newHashSet();
-
-            try (ResultSet rs = connection.prepareStatement("SELECT * FROM " + migrationTableName).executeQuery()) {
-                while (rs.next()) {
-                    migrationIds.add(migrationId(rs.getString("migration_id")));
-                }
-            }
-
-            return migrationIds;
-
-        } catch (SQLException e) {
-            throw new IllegalStateException(e);
-        }
+        return selectDistinct(
+                "SELECT * FROM " + migrationTableName,
+                rs -> migrationId(rs.getString("migration_id"))
+        );
     }
 }

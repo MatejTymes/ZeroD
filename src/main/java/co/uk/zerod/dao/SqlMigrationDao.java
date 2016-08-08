@@ -13,15 +13,13 @@ import java.util.Set;
 import static co.uk.zerod.wip.MigrationId.migrationId;
 import static com.google.common.collect.Sets.newHashSet;
 
-public class SqlMigrationDao implements MigrationDao {
+public class SqlMigrationDao extends BaseSqlDao implements MigrationDao {
 
     private final TableName migrationTableName;
 
-    private final DataSource dataSource;
-
     public SqlMigrationDao(TableName migrationTableName, DataSource dataSource) {
+        super(dataSource);
         this.migrationTableName = migrationTableName;
-        this.dataSource = dataSource;
     }
 
     @Override

@@ -15,4 +15,8 @@ public class Agent extends DataObject {
         this.health = health;
         this.lastUpdatedAt = lastUpdatedAt;
     }
+
+    public AgentName name() {
+        return name;
+    }
 }

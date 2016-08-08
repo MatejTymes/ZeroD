@@ -15,6 +15,10 @@ public class Health extends Microtype<Byte> {
         return new Health(value);
     }
 
+    public static Health noHealth() {
+        return health((byte) 0);
+    }
+
     public boolean isAlive() {
         return value() > 0;
     }

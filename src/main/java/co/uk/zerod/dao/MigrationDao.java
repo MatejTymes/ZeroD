@@ -1,6 +1,6 @@
 package co.uk.zerod.dao;
 
-import co.uk.zerod.wip.MigrationId;
+import co.uk.zerod.domain.MigrationId;
 
 import java.util.Set;
 

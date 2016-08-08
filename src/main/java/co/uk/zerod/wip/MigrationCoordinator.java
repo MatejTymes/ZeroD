@@ -1,6 +1,7 @@
 package co.uk.zerod.wip;
 
 import co.uk.zerod.AccessGuide;
+import co.uk.zerod.domain.MigrationId;
 
 public class MigrationCoordinator {
 

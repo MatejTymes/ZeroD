@@ -1,13 +1,12 @@
 package co.uk.zerod.sample;
 
+import co.uk.zerod.domain.MigrationId;
 import co.uk.zerod.sample.dao.VersionedStore;
 import co.uk.zerod.sample.domain.UserId;
-import co.uk.zerod.wip.MigrationId;
 
-import java.util.Map;
 import java.util.Optional;
 
-import static co.uk.zerod.wip.MigrationId.migrationId;
+import static co.uk.zerod.domain.MigrationId.migrationId;
 
 public class MigrationHelper {
 

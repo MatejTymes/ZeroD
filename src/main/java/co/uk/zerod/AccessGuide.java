@@ -1,6 +1,6 @@
 package co.uk.zerod;
 
-import co.uk.zerod.wip.MigrationId;
+import co.uk.zerod.domain.MigrationId;
 
 import java.util.Map;
 import java.util.function.Function;

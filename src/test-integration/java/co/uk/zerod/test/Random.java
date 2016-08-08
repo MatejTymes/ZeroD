@@ -1,13 +1,13 @@
 package co.uk.zerod.test;
 
 import co.uk.zerod.domain.Health;
-import co.uk.zerod.wip.MigrationId;
+import co.uk.zerod.domain.MigrationId;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static co.uk.zerod.domain.Health.health;
-import static co.uk.zerod.wip.MigrationId.migrationId;
+import static co.uk.zerod.domain.MigrationId.migrationId;
 import static java.util.UUID.randomUUID;
 
 // todo: merge both Randoms into one test code

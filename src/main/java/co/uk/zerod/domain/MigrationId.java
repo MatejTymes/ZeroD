@@ -1,4 +1,4 @@
-package co.uk.zerod.wip;
+package co.uk.zerod.domain;
 
 import external.mtymes.javafixes.object.Microtype;
 

@@ -1,7 +1,7 @@
 package co.uk.zerod.dao;
 
+import co.uk.zerod.domain.MigrationId;
 import co.uk.zerod.domain.TableName;
-import co.uk.zerod.wip.MigrationId;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Set;
 
-import static co.uk.zerod.wip.MigrationId.migrationId;
+import static co.uk.zerod.domain.MigrationId.migrationId;
 
 public class SqlMigrationDao extends BaseSqlDao implements MigrationDao {
 

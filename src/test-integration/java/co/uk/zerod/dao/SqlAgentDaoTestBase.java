@@ -178,6 +178,18 @@ public abstract class SqlAgentDaoTestBase {
     }
 
     @Test
+    public void shouldConsiderAgentToBeStale() {
+        AgentName agentName = agentName("agent1");
+        dao.registerAgentHealth(agentName, randomHealth());
+        Agent storedAgent = dao.findAgent(agentName).get();
+
+        // When & Then
+        assertThat(dao.findStaleAgents(storedAgent.lastUpdatedAt.minusSeconds(1)).stream().map(Agent::name).collect(toSet()), is(empty()));
+        assertThat(dao.findStaleAgents(storedAgent.lastUpdatedAt).stream().map(Agent::name).collect(toSet()), equalTo(newHashSet(agentName)));
+        assertThat(dao.findStaleAgents(storedAgent.lastUpdatedAt.plusSeconds(1)).stream().map(Agent::name).collect(toSet()), equalTo(newHashSet(agentName)));
+    }
+
+    @Test
     public void shouldFindStaleAgents() {
         AgentName agentName1 = agentName("agent1");
         AgentName agentName2 = agentName("agent2");

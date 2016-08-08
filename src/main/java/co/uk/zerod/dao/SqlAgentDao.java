@@ -97,10 +97,10 @@ public class SqlAgentDao extends BaseSqlDao implements AgentDao {
     }
 
     @Override
-    public Set<Agent> findStaleAgents(ZonedDateTime since) {
+    public Set<Agent> findStaleAgents(ZonedDateTime notUpdatedSince) {
         return selectDistinct(
-                "SELECT * FROM " + agentTableName + " WHERE last_updated_at < ?",
-                ps -> ps.setTimestamp(1, toTimeStamp(since)),
+                "SELECT * FROM " + agentTableName + " WHERE last_updated_at <= ?",
+                ps -> ps.setTimestamp(1, toTimeStamp(notUpdatedSince)),
                 this::toAgent
         );
     }

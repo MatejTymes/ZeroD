@@ -2,7 +2,7 @@ package co.uk.zerod.dao;
 
 import co.uk.zerod.common.Clock;
 import co.uk.zerod.domain.Agent;
-import co.uk.zerod.domain.AgentName;
+import co.uk.zerod.domain.AgentId;
 import co.uk.zerod.domain.Health;
 import org.junit.Test;
 
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static co.uk.zerod.domain.AgentName.agentName;
+import static co.uk.zerod.domain.AgentId.agentId;
 import static co.uk.zerod.domain.Health.noHealth;
 import static co.uk.zerod.domain.TableName.tableName;
 import static co.uk.zerod.test.Condition.otherThan;
@@ -30,11 +30,11 @@ public abstract class SqlAgentDaoTestBase {
 
     private Clock clock = new Clock();
 
-    private SqlAgentDao dao = new SqlAgentDao(tableName("agent"), getDataSource(), clock);
+    private SqlAgentDao dao = new SqlAgentDao(tableName("zd_agent"), getDataSource(), clock);
 
     @Test
     public void shouldFindNoAgentsInEmptyDb() {
-        assertThat(dao.findAgent(agentName("agent1")).isPresent(), equalTo(false)); // todo: add Optional matcher
+        assertThat(dao.findAgent(agentId("agent1")).isPresent(), equalTo(false)); // todo: add Optional matcher
         assertThat(dao.findLiveAgents(), is(empty()));
         assertThat(dao.findDeadAgents(), is(empty()));
         assertThat(dao.findStaleAgents(clock.now()), is(empty()));
@@ -42,18 +42,18 @@ public abstract class SqlAgentDaoTestBase {
 
     @Test
     public void shouldBeAbleToRegisterAnAgent() {
-        AgentName agentName = agentName("agent1");
+        AgentId agentId = agentId("agent1");
         Health health = randomHealth();
 
         // When
         ZonedDateTime timeBeforeRegistration = clock.now();
-        dao.registerAgentHealth(agentName, health);
+        dao.registerAgentHealth(agentId, health);
         ZonedDateTime timeAfterRegistration = clock.now();
 
         // Then
-        Optional<Agent> foundAgent = dao.findAgent(agentName);
+        Optional<Agent> foundAgent = dao.findAgent(agentId);
         assertThat(foundAgent.isPresent(), equalTo(true)); // todo: add Optional matcher
-        assertThat(foundAgent.get(), equalTo(new Agent(agentName, health, foundAgent.get().lastUpdatedAt)));
+        assertThat(foundAgent.get(), equalTo(new Agent(agentId, health, foundAgent.get().lastUpdatedAt)));
 
         // todo: add ZonedDateTime matcher
         ZonedDateTime storedUpdateTime = foundAgent.get().lastUpdatedAt;
@@ -63,17 +63,17 @@ public abstract class SqlAgentDaoTestBase {
 
     @Test
     public void shouldBeAbleToFindLiveAgent() {
-        AgentName agentName = agentName("agent1");
+        AgentId agentId = agentId("agent1");
 
         // When
         Health health = randomLiveHealth();
-        dao.registerAgentHealth(agentName, health);
+        dao.registerAgentHealth(agentId, health);
 
         // Then
         List<Agent> liveAgents = newArrayList(dao.findLiveAgents());
         assertThat(liveAgents, hasSize(1));
         Agent foundAgent = liveAgents.get(0);
-        assertThat(foundAgent, equalTo(new Agent(agentName, health, foundAgent.lastUpdatedAt)));
+        assertThat(foundAgent, equalTo(new Agent(agentId, health, foundAgent.lastUpdatedAt)));
 
         Set<Agent> deadAgents = dao.findDeadAgents();
         assertThat(deadAgents, is(empty()));
@@ -81,11 +81,11 @@ public abstract class SqlAgentDaoTestBase {
 
     @Test
     public void shouldBeAbleToFindDeadAgent() {
-        AgentName agentName = agentName("agent1");
+        AgentId agentId = agentId("agent1");
 
         // When
         Health health = noHealth();
-        dao.registerAgentHealth(agentName, health);
+        dao.registerAgentHealth(agentId, health);
 
         // Then
         Set<Agent> liveAgents = dao.findLiveAgents();
@@ -94,127 +94,127 @@ public abstract class SqlAgentDaoTestBase {
         List<Agent> deadAgents = newArrayList(dao.findDeadAgents());
         assertThat(deadAgents, hasSize(1));
         Agent foundAgent = deadAgents.get(0);
-        assertThat(foundAgent, equalTo(new Agent(agentName, health, foundAgent.lastUpdatedAt)));
+        assertThat(foundAgent, equalTo(new Agent(agentId, health, foundAgent.lastUpdatedAt)));
     }
 
     @Test
     public void shouldUpdateHealthIfNotUpdatedSinceDate() {
-        AgentName agentName = agentName("agent1");
-        dao.registerAgentHealth(agentName, randomLiveHealth());
-        Agent originalAgent = dao.findAgent(agentName).get();
+        AgentId agentId = agentId("agent1");
+        dao.registerAgentHealth(agentId, randomLiveHealth());
+        Agent originalAgent = dao.findAgent(agentId).get();
 
         Health newHealth = randomHealth(otherThan(randomLiveHealth()));
         waitForMs(10);
 
         // When
-        dao.updateAgentsHealth(agentName, originalAgent.health, newHealth, originalAgent.lastUpdatedAt);
+        dao.updateAgentsHealth(agentId, originalAgent.health, newHealth, originalAgent.lastUpdatedAt);
 
         // Then
-        Agent updatedAgent = dao.findAgent(agentName).get();
+        Agent updatedAgent = dao.findAgent(agentId).get();
         assertThat(updatedAgent.lastUpdatedAt.isAfter(originalAgent.lastUpdatedAt), is(true));
         assertThat(updatedAgent.health, equalTo(newHealth));
 
-        assertThat(updatedAgent.name, equalTo(agentName));
+        assertThat(updatedAgent.id, equalTo(agentId));
     }
 
     @Test
     public void shouldUpdateHealthIfNotUpdatedSinceDate2() {
-        AgentName agentName = agentName("agent1");
-        dao.registerAgentHealth(agentName, randomLiveHealth());
-        Agent originalAgent = dao.findAgent(agentName).get();
+        AgentId agentId = agentId("agent1");
+        dao.registerAgentHealth(agentId, randomLiveHealth());
+        Agent originalAgent = dao.findAgent(agentId).get();
 
         Health newHealth = randomHealth(otherThan(randomLiveHealth()));
         waitForMs(10);
 
         // When
-        dao.updateAgentsHealth(agentName, originalAgent.health, newHealth, originalAgent.lastUpdatedAt.plusSeconds(randomInt(1, 100)));
+        dao.updateAgentsHealth(agentId, originalAgent.health, newHealth, originalAgent.lastUpdatedAt.plusSeconds(randomInt(1, 100)));
 
         // Then
-        Agent updatedAgent = dao.findAgent(agentName).get();
+        Agent updatedAgent = dao.findAgent(agentId).get();
         assertThat(updatedAgent.health, equalTo(newHealth));
         assertThat(updatedAgent.lastUpdatedAt.isAfter(originalAgent.lastUpdatedAt), is(true));
 
-        assertThat(updatedAgent.name, equalTo(agentName));
+        assertThat(updatedAgent.id, equalTo(agentId));
     }
 
     @Test
     public void shouldNotUpdateHealthIfUpdatedSinceDate() {
-        AgentName agentName = agentName("agent1");
-        dao.registerAgentHealth(agentName, randomLiveHealth());
-        Agent originalAgent = dao.findAgent(agentName).get();
+        AgentId agentId = agentId("agent1");
+        dao.registerAgentHealth(agentId, randomLiveHealth());
+        Agent originalAgent = dao.findAgent(agentId).get();
 
         Health newHealth = randomHealth(otherThan(randomLiveHealth()));
         waitForMs(10);
 
         // When
-        dao.updateAgentsHealth(agentName, originalAgent.health, newHealth, originalAgent.lastUpdatedAt.minusSeconds(randomInt(1, 100)));
+        dao.updateAgentsHealth(agentId, originalAgent.health, newHealth, originalAgent.lastUpdatedAt.minusSeconds(randomInt(1, 100)));
 
         // Then
-        Agent updatedAgent = dao.findAgent(agentName).get();
+        Agent updatedAgent = dao.findAgent(agentId).get();
         assertThat(updatedAgent.health, equalTo(originalAgent.health));
         assertThat(updatedAgent.lastUpdatedAt.isEqual(originalAgent.lastUpdatedAt), is(true));
 
-        assertThat(updatedAgent.name, equalTo(agentName));
+        assertThat(updatedAgent.id, equalTo(agentId));
     }
 
     @Test
     public void shouldNotUpdateHealthIfExpetedHealthDoesntMatch() {
-        AgentName agentName = agentName("agent1");
-        dao.registerAgentHealth(agentName, randomLiveHealth());
-        Agent originalAgent = dao.findAgent(agentName).get();
+        AgentId agentId = agentId("agent1");
+        dao.registerAgentHealth(agentId, randomLiveHealth());
+        Agent originalAgent = dao.findAgent(agentId).get();
 
         Health newHealth = randomHealth(otherThan(randomLiveHealth()));
         waitForMs(10);
 
         // When
-        dao.updateAgentsHealth(agentName, randomHealth(otherThan(originalAgent.health)), newHealth, originalAgent.lastUpdatedAt);
+        dao.updateAgentsHealth(agentId, randomHealth(otherThan(originalAgent.health)), newHealth, originalAgent.lastUpdatedAt);
 
         // Then
-        Agent updatedAgent = dao.findAgent(agentName).get();
+        Agent updatedAgent = dao.findAgent(agentId).get();
         assertThat(updatedAgent.health, equalTo(originalAgent.health));
         assertThat(updatedAgent.lastUpdatedAt.isEqual(originalAgent.lastUpdatedAt), is(true));
 
-        assertThat(updatedAgent.name, equalTo(agentName));
+        assertThat(updatedAgent.id, equalTo(agentId));
     }
 
     @Test
     public void shouldConsiderAgentToBeStale() {
-        AgentName agentName = agentName("agent1");
-        dao.registerAgentHealth(agentName, randomHealth());
-        Agent storedAgent = dao.findAgent(agentName).get();
+        AgentId agentId = agentId("agent1");
+        dao.registerAgentHealth(agentId, randomHealth());
+        Agent storedAgent = dao.findAgent(agentId).get();
 
         // When & Then
-        assertThat(dao.findStaleAgents(storedAgent.lastUpdatedAt.minusSeconds(1)).stream().map(Agent::name).collect(toSet()), is(empty()));
-        assertThat(dao.findStaleAgents(storedAgent.lastUpdatedAt).stream().map(Agent::name).collect(toSet()), equalTo(newHashSet(agentName)));
-        assertThat(dao.findStaleAgents(storedAgent.lastUpdatedAt.plusSeconds(1)).stream().map(Agent::name).collect(toSet()), equalTo(newHashSet(agentName)));
+        assertThat(dao.findStaleAgents(storedAgent.lastUpdatedAt.minusSeconds(1)).stream().map(Agent::id).collect(toSet()), is(empty()));
+        assertThat(dao.findStaleAgents(storedAgent.lastUpdatedAt).stream().map(Agent::id).collect(toSet()), equalTo(newHashSet(agentId)));
+        assertThat(dao.findStaleAgents(storedAgent.lastUpdatedAt.plusSeconds(1)).stream().map(Agent::id).collect(toSet()), equalTo(newHashSet(agentId)));
     }
 
     @Test
     public void shouldFindStaleAgents() {
-        AgentName agentName1 = agentName("agent1");
-        AgentName agentName2 = agentName("agent2");
-        AgentName agentName3 = agentName("agent3");
-        AgentName agentName4 = agentName("agent4");
+        AgentId agentId1 = agentId("agent1");
+        AgentId agentId2 = agentId("agent2");
+        AgentId agentId3 = agentId("agent3");
+        AgentId agentId4 = agentId("agent4");
 
         Health deadlyHealth = noHealth();
         Health liveHealth = randomLiveHealth();
 
         // todo: add updated and not updated agents as well
-        dao.registerAgentHealth(agentName1, deadlyHealth);
+        dao.registerAgentHealth(agentId1, deadlyHealth);
         waitForMs(10);
-        dao.registerAgentHealth(agentName2, liveHealth);
+        dao.registerAgentHealth(agentId2, liveHealth);
         waitForMs(10);
         ZonedDateTime cutoutTime = clock.now();
         waitForMs(10);
-        dao.registerAgentHealth(agentName3, deadlyHealth);
+        dao.registerAgentHealth(agentId3, deadlyHealth);
         waitForMs(10);
-        dao.registerAgentHealth(agentName4, liveHealth);
+        dao.registerAgentHealth(agentId4, liveHealth);
 
         // When
         Set<Agent> staleAgents = dao.findStaleAgents(cutoutTime);
 
         // Then
-        assertThat(staleAgents.stream().map(Agent::name).collect(toSet()), equalTo(newHashSet(agentName1, agentName2)));
+        assertThat(staleAgents.stream().map(Agent::id).collect(toSet()), equalTo(newHashSet(agentId1, agentId2)));
     }
 
 

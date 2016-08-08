@@ -1,7 +1,7 @@
 package co.uk.zerod.dao;
 
 import co.uk.zerod.domain.Agent;
-import co.uk.zerod.domain.AgentName;
+import co.uk.zerod.domain.AgentId;
 import co.uk.zerod.domain.Health;
 
 import java.time.ZonedDateTime;
@@ -11,13 +11,14 @@ import java.util.Set;
 public interface AgentDao {
 
     // todo: made concurrent safe - add concurrency test
-    void registerAgentHealth(AgentName agentName, Health health);
+    void registerAgentHealth(AgentId agentId, Health health);
 
     // todo: made concurrent safe - add concurrency test
-    boolean updateAgentsHealth(AgentName agentName, Health from, Health to, ZonedDateTime ifNotUpdatedSince);
+    boolean updateAgentsHealth(AgentId agentId, Health from, Health to, ZonedDateTime ifNotUpdatedSince);
 
-    Optional<Agent> findAgent(AgentName agentName);
+    Optional<Agent> findAgent(AgentId agentId);
 
+    // todo: replace with findLiveStaleAgents
     Set<Agent> findStaleAgents(ZonedDateTime notUpdatedSince);
 
     Set<Agent> findLiveAgents();

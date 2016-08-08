@@ -16,8 +16,7 @@ public interface AgentDao {
 
     Optional<Agent> findAgent(AgentId agentId);
 
-    // todo: replace with findLiveStaleAgents
-    Set<Agent> findStaleAgents(ZonedDateTime notUpdatedSince);
+    Set<Agent> findStaleLiveAgents(ZonedDateTime notUpdatedSince);
 
     Set<Agent> findLiveAgents();
 

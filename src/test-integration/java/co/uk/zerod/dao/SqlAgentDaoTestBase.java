@@ -17,6 +17,8 @@ import static co.uk.zerod.domain.Health.noHealth;
 import static co.uk.zerod.domain.TableName.tableName;
 import static co.uk.zerod.test.Condition.otherThan;
 import static co.uk.zerod.test.Random.*;
+import static co.uk.zerod.test.matcher.OptionalMatcher.isNotPresent;
+import static co.uk.zerod.test.matcher.OptionalMatcher.isPresent;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.util.stream.Collectors.toSet;
@@ -34,7 +36,7 @@ public abstract class SqlAgentDaoTestBase {
 
     @Test
     public void shouldFindNoAgentsInEmptyDb() {
-        assertThat(dao.findAgent(agentId("agent1")).isPresent(), equalTo(false)); // todo: add Optional matcher
+        assertThat(dao.findAgent(agentId("agent1")), isNotPresent());
         assertThat(dao.findLiveAgents(), is(empty()));
         assertThat(dao.findDeadAgents(), is(empty()));
         assertThat(dao.findStaleAgents(clock.now()), is(empty()));
@@ -52,7 +54,7 @@ public abstract class SqlAgentDaoTestBase {
 
         // Then
         Optional<Agent> foundAgent = dao.findAgent(agentId);
-        assertThat(foundAgent.isPresent(), equalTo(true)); // todo: add Optional matcher
+        assertThat(foundAgent, isPresent());
         assertThat(foundAgent.get(), equalTo(new Agent(agentId, health, foundAgent.get().lastUpdatedAt)));
 
         // todo: add ZonedDateTime matcher

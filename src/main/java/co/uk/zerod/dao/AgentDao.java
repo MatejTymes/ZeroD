@@ -10,10 +10,8 @@ import java.util.Set;
 
 public interface AgentDao {
 
-    // todo: made concurrent safe - add concurrency test
     void registerAgentHealth(AgentId agentId, Health health);
 
-    // todo: made concurrent safe - add concurrency test
     boolean updateAgentsHealth(AgentId agentId, Health from, Health to, ZonedDateTime ifNotUpdatedSince);
 
     Optional<Agent> findAgent(AgentId agentId);

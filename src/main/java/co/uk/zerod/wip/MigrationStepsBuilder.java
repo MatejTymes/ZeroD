@@ -1,7 +1,7 @@
 package co.uk.zerod.wip;
 
 import co.uk.zerod.ReadWriteState;
-import external.mtymes.javafixes.concurrency.Task;
+import mtymes.javafixes.concurrency.Task;
 
 import static co.uk.zerod.ReadWriteState.*;
 

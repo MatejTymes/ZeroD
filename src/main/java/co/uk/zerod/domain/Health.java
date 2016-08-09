@@ -1,6 +1,6 @@
 package co.uk.zerod.domain;
 
-import external.mtymes.javafixes.object.Microtype;
+import mtymes.javafixes.object.Microtype;
 
 public class Health extends Microtype<Byte> {
 

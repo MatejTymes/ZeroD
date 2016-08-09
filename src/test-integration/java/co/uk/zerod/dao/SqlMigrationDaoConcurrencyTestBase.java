@@ -1,7 +1,7 @@
 package co.uk.zerod.dao;
 
 import co.uk.zerod.domain.MigrationId;
-import external.mtymes.javafixes.concurrency.Runner;
+import mtymes.javafixes.concurrency.Runner;
 import org.junit.Test;
 
 import javax.sql.DataSource;
@@ -9,7 +9,7 @@ import java.util.concurrent.CyclicBarrier;
 
 import static co.uk.zerod.domain.TableName.tableName;
 import static co.uk.zerod.test.Random.randomMigrationId;
-import static external.mtymes.javafixes.concurrency.Runner.runner;
+import static mtymes.javafixes.concurrency.Runner.runner;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 

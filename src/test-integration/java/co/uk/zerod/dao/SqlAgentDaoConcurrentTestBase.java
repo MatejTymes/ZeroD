@@ -4,7 +4,7 @@ import co.uk.zerod.common.Clock;
 import co.uk.zerod.domain.Agent;
 import co.uk.zerod.domain.AgentId;
 import co.uk.zerod.domain.Health;
-import external.mtymes.javafixes.concurrency.Runner;
+import mtymes.javafixes.concurrency.Runner;
 import org.junit.Test;
 
 import javax.sql.DataSource;
@@ -18,7 +18,7 @@ import static co.uk.zerod.test.Condition.otherThan;
 import static co.uk.zerod.test.Random.randomHealth;
 import static co.uk.zerod.test.Random.randomUUIDString;
 import static co.uk.zerod.test.matcher.OptionalMatcher.isPresent;
-import static external.mtymes.javafixes.concurrency.Runner.runner;
+import static mtymes.javafixes.concurrency.Runner.runner;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;

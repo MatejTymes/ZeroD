@@ -1,6 +1,6 @@
 package co.uk.zerod.domain;
 
-import external.mtymes.javafixes.object.DataObject;
+import mtymes.javafixes.object.DataObject;
 
 import java.time.ZonedDateTime;
 

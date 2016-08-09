@@ -1,6 +1,6 @@
 package co.uk.zerod.sample.domain;
 
-import external.mtymes.javafixes.object.Microtype;
+import mtymes.javafixes.object.Microtype;
 
 import java.util.UUID;
 

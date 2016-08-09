@@ -1,6 +1,6 @@
 package co.uk.zerod.sample.domain;
 
-import external.mtymes.javafixes.object.DataObject;
+import mtymes.javafixes.object.DataObject;
 
 public class User extends DataObject {
 

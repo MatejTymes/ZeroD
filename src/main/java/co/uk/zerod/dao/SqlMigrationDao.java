@@ -14,11 +14,11 @@ import static co.uk.zerod.domain.MigrationId.migrationId;
 
 public class SqlMigrationDao extends BaseSqlDao implements MigrationDao {
 
-    private final TableName migrationTableName;
+    private final TableName migrationTable;
 
-    public SqlMigrationDao(TableName migrationTableName, DataSource dataSource) {
+    public SqlMigrationDao(TableName migrationTable, DataSource dataSource) {
         super(dataSource);
-        this.migrationTableName = migrationTableName;
+        this.migrationTable = migrationTable;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class SqlMigrationDao extends BaseSqlDao implements MigrationDao {
             }
 
             try {
-                PreparedStatement ps = connection.prepareStatement("INSERT INTO " + migrationTableName + " (migration_id) VALUES (?)");
+                PreparedStatement ps = connection.prepareStatement("INSERT INTO " + migrationTable + " (migration_id) VALUES (?)");
                 ps.setString(1, migrationId.value());
                 ps.execute();
             } catch (SQLException e) {
@@ -43,22 +43,22 @@ public class SqlMigrationDao extends BaseSqlDao implements MigrationDao {
         }
     }
 
+    @Override
+    public Set<MigrationId> findAllMigrations() {
+        return selectDistinct(
+                "SELECT * FROM " + migrationTable,
+                rs -> migrationId(rs.getString("migration_id"))
+        );
+    }
+
     private boolean isMigrationStored(MigrationId migrationId, Connection connection) throws SQLException {
         PreparedStatement ps;
         boolean isMigrationStored;
-        ps = connection.prepareStatement("SELECT * FROM " + migrationTableName + " WHERE migration_id = ?");
+        ps = connection.prepareStatement("SELECT * FROM " + migrationTable + " WHERE migration_id = ?");
         ps.setString(1, migrationId.value());
         try (ResultSet rs = ps.executeQuery()) {
             isMigrationStored = rs.next();
         }
         return isMigrationStored;
-    }
-
-    @Override
-    public Set<MigrationId> findAllMigrations() {
-        return selectDistinct(
-                "SELECT * FROM " + migrationTableName,
-                rs -> migrationId(rs.getString("migration_id"))
-        );
     }
 }

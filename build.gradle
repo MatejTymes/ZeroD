@@ -1,12 +1,7 @@
-apply plugin: 'java'
 
 buildscript {
     repositories {
-        maven {
-            url "https://oss.sonatype.org/content/repositories/releases/"
-        }
         jcenter()
-//        mavenCentral()
     }
     dependencies {
         classpath 'org.unbroken-dome.gradle-plugins:gradle-testsets-plugin:1.2.0'
@@ -23,6 +18,10 @@ allprojects {
 }
 
 repositories {
+//        maven {
+//            url "https://oss.sonatype.org/content/repositories/releases/"
+//        }
+//    jcenter()
     mavenCentral()
 }
 

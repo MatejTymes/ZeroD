@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newLinkedHashSet;
@@ -103,6 +104,49 @@ public abstract class BaseSqlDao {
             statementFiller.fillParams(ps);
 
             return ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    protected void upsert(
+            String existenceSelect, StatementFiller existenceStatementFiller,
+            String insert, StatementFiller insertStatementFiller,
+            String update, StatementFiller updateStatementFiller,
+            Supplier<String> failureMessageSupplier
+    ) {
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement selectStatement = connection.prepareStatement(
+                    existenceSelect
+            );
+            existenceStatementFiller.fillParams(selectStatement);
+            boolean exists;
+            try (ResultSet rs = selectStatement.executeQuery()) {
+                exists = rs.next();
+            }
+
+            boolean insertionFailed = false;
+            if (!exists) {
+                PreparedStatement insertStatement = connection.prepareStatement(
+                        insert
+                );
+                insertStatementFiller.fillParams(insertStatement);
+                try {
+                    insertionFailed = (insertStatement.executeUpdate() != 1);
+                } catch (SQLException e) {
+                    insertionFailed = true;
+                }
+            }
+
+            if (exists || insertionFailed) {
+                PreparedStatement updateStatement = connection.prepareStatement(
+                        update
+                );
+                updateStatementFiller.fillParams(updateStatement);
+                if (updateStatement.executeUpdate() != 1) {
+                    throw new IllegalStateException(failureMessageSupplier.get());
+                }
+            }
         } catch (SQLException e) {
             throw new IllegalStateException(e);
         }

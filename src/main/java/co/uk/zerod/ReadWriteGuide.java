@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 import static java.util.Arrays.stream;
 
-public class MigrationGuide {
+public class ReadWriteGuide {
 
     private final Map<ReadState, ReusableCountLatch> readCounters = new HashMap<>();
     private final Map<WriteState, ReusableCountLatch> writeCounters = new HashMap<>();
@@ -17,7 +17,7 @@ public class MigrationGuide {
     private volatile ReadWriteState transitionToState;
 
 
-    public MigrationGuide(ReadWriteState state) {
+    public ReadWriteGuide(ReadWriteState state) {
         this.currentState = state;
         this.transitionToState = state;
 

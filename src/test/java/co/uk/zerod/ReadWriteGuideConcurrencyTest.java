@@ -16,7 +16,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
-public class MigrationGuideConcurrencyTest {
+public class ReadWriteGuideConcurrencyTest {
 
     private ExecutorService executor;
 
@@ -33,7 +33,7 @@ public class MigrationGuideConcurrencyTest {
 
     @Test
     public void shouldBlockStateSwitchToIfActiveReaderHasDifferentReadState() throws Exception {
-        MigrationGuide guide = new MigrationGuide(ReadOld_WriteBoth);
+        ReadWriteGuide guide = new ReadWriteGuide(ReadOld_WriteBoth);
 
         long durationInMS = 300;
         CountDownLatch readCountDown = submitStartableRead(guide, durationInMS);
@@ -52,7 +52,7 @@ public class MigrationGuideConcurrencyTest {
 
     @Test
     public void shouldBlockStateSwitchToIfActiveWriterHasDifferentWriteState1() {
-        MigrationGuide guide = new MigrationGuide(ReadOld_WriteOld);
+        ReadWriteGuide guide = new ReadWriteGuide(ReadOld_WriteOld);
 
         long durationInMS = 300;
         CountDownLatch writeCountDown = submitStartableWrite(guide, durationInMS);
@@ -71,7 +71,7 @@ public class MigrationGuideConcurrencyTest {
 
     @Test
     public void shouldBlockStateSwitchToIfActiveWriterHasDifferentWriteState2() {
-        MigrationGuide guide = new MigrationGuide(ReadNew_WriteBoth);
+        ReadWriteGuide guide = new ReadWriteGuide(ReadNew_WriteBoth);
 
 
         long durationInMS = 300;
@@ -91,7 +91,7 @@ public class MigrationGuideConcurrencyTest {
 
     @Test
     public void shouldNotBlockStateSwitchIfActiveReadersHaveTheSameReadState1() {
-        MigrationGuide guide = new MigrationGuide(ReadOld_WriteOld);
+        ReadWriteGuide guide = new ReadWriteGuide(ReadOld_WriteOld);
 
         long durationInMS = 300;
         CountDownLatch readCountDown = submitStartableRead(guide, durationInMS);
@@ -110,7 +110,7 @@ public class MigrationGuideConcurrencyTest {
 
     @Test
     public void shouldNotBlockStateSwitchIfActiveReaderHaveTheSameReadState2() {
-        MigrationGuide guide = new MigrationGuide(ReadNew_WriteBoth);
+        ReadWriteGuide guide = new ReadWriteGuide(ReadNew_WriteBoth);
 
         long durationInMS = 300;
         CountDownLatch readCountDown = submitStartableRead(guide, durationInMS);
@@ -129,7 +129,7 @@ public class MigrationGuideConcurrencyTest {
 
     @Test
     public void shouldNotBlockStateSwitchIfActiveWritersHaveTheSameWriteState() {
-        MigrationGuide guide = new MigrationGuide(ReadOld_WriteBoth);
+        ReadWriteGuide guide = new ReadWriteGuide(ReadOld_WriteBoth);
 
         long durationInMS = 300;
         CountDownLatch writeCountDown = submitStartableWrite(guide, durationInMS);
@@ -148,7 +148,7 @@ public class MigrationGuideConcurrencyTest {
 
     @Test
     public void shouldUseNewReadStatusWhileSwitchingAndNotBlock() {
-        MigrationGuide guide = new MigrationGuide(ReadOld_WriteBoth);
+        ReadWriteGuide guide = new ReadWriteGuide(ReadOld_WriteBoth);
 
         long durationInMS = 600;
         submitStartableRead(guide, durationInMS)
@@ -168,7 +168,7 @@ public class MigrationGuideConcurrencyTest {
 
     @Test
     public void shouldUseNewWriteStatusWhileSwitchingAndNotBlock1() {
-        MigrationGuide guide = new MigrationGuide(ReadOld_WriteOld);
+        ReadWriteGuide guide = new ReadWriteGuide(ReadOld_WriteOld);
 
         long durationInMS = 600;
         submitStartableWrite(guide, durationInMS)
@@ -188,7 +188,7 @@ public class MigrationGuideConcurrencyTest {
 
     @Test
     public void shouldUseNewWriteStatusWhileSwitchingAndNotBlock2() {
-        MigrationGuide guide = new MigrationGuide(ReadNew_WriteBoth);
+        ReadWriteGuide guide = new ReadWriteGuide(ReadNew_WriteBoth);
 
         long durationInMS = 600;
         submitStartableWrite(guide, durationInMS)
@@ -208,7 +208,7 @@ public class MigrationGuideConcurrencyTest {
 
     @Test
     public void shouldHaveDifferentCurrentAndTransitionToStateIfSwitchHasNotCompleted() {
-        MigrationGuide guide = new MigrationGuide(ReadOld_WriteBoth);
+        ReadWriteGuide guide = new ReadWriteGuide(ReadOld_WriteBoth);
 
         // When
         long durationInMS = 600;
@@ -223,7 +223,7 @@ public class MigrationGuideConcurrencyTest {
 
     @Test
     public void shouldNotBeAbleToSwitchToNextStateBeforeThePreviousSwitchHasEnded() {
-        MigrationGuide guide = new MigrationGuide(ReadOld_WriteOld);
+        ReadWriteGuide guide = new ReadWriteGuide(ReadOld_WriteOld);
 
         long durationInMS = 600;
         submitStartableWrite(guide, durationInMS)
@@ -243,7 +243,7 @@ public class MigrationGuideConcurrencyTest {
     }
 
 
-    private CountDownLatch submitStartableRead(MigrationGuide guide, long readDurationInMS) {
+    private CountDownLatch submitStartableRead(ReadWriteGuide guide, long readDurationInMS) {
         CountDownLatch readCounDown = new CountDownLatch(1);
         CountDownLatch enteredGuidedMethod = new CountDownLatch(1);
         executor.submit(() -> guide.read(readState -> {
@@ -265,7 +265,7 @@ public class MigrationGuideConcurrencyTest {
         return readCounDown;
     }
 
-    private CountDownLatch submitStartableWrite(MigrationGuide guide, long writeDurationInMS) {
+    private CountDownLatch submitStartableWrite(ReadWriteGuide guide, long writeDurationInMS) {
         CountDownLatch writeCounDown = new CountDownLatch(1);
         CountDownLatch enteredGuidedMethod = new CountDownLatch(1);
         executor.submit(() -> guide.write(writeState -> {
@@ -286,7 +286,7 @@ public class MigrationGuideConcurrencyTest {
         return writeCounDown;
     }
 
-    private void switchStateOnNewThread(MigrationGuide guide, ReadWriteState newState) {
+    private void switchStateOnNewThread(ReadWriteGuide guide, ReadWriteState newState) {
         executor.submit(() -> guide.switchState(newState));
         try {
             Thread.sleep(50L);

@@ -3,10 +3,7 @@ package co.uk.zerod.dao;
 import co.uk.zerod.domain.MigrationId;
 import org.junit.Test;
 
-import javax.sql.DataSource;
-
 import static co.uk.zerod.domain.MigrationId.migrationId;
-import static co.uk.zerod.domain.TableName.tableName;
 import static co.uk.zerod.test.Random.randomMigrationId;
 import static com.google.common.collect.Sets.newHashSet;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -15,9 +12,9 @@ import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-public abstract class SqlMigrationDaoTestBase {
+public abstract class MigrationDaoTestBase {
 
-    private MigrationDao dao = new SqlMigrationDao(tableName("zd_migration"), getDataSource());
+    private MigrationDao dao = getDao();
 
     @Test
     public void shouldNotFindAnyMigrationsInEmptyDb() {
@@ -75,5 +72,5 @@ public abstract class SqlMigrationDaoTestBase {
     }
 
 
-    protected abstract DataSource getDataSource();
+    protected abstract MigrationDao getDao();
 }

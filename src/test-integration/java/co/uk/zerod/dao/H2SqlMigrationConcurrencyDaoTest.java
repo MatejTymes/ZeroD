@@ -7,9 +7,10 @@ import org.junit.BeforeClass;
 
 import javax.sql.DataSource;
 
+import static co.uk.zerod.domain.TableName.tableName;
 import static co.uk.zerod.test.db.EmbeddedDb.createDb;
 
-public class H2SqlMigrationConcurrencyDaoTest extends SqlMigrationDaoConcurrencyTestBase {
+public class H2SqlMigrationConcurrencyDaoTest extends MigrationDaoConcurrencyTestBase {
 
     private static EmbeddedDb db;
     private static DataSource dataSource;
@@ -31,7 +32,7 @@ public class H2SqlMigrationConcurrencyDaoTest extends SqlMigrationDaoConcurrency
     }
 
     @Override
-    protected DataSource getDataSource() {
-        return dataSource;
+    protected MigrationDao getDao() {
+        return new SqlMigrationDao(tableName("zd_migration"), dataSource);
     }
 }

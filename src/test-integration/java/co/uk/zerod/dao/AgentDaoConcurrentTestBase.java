@@ -1,19 +1,16 @@
 package co.uk.zerod.dao;
 
-import co.uk.zerod.common.Clock;
 import co.uk.zerod.domain.Agent;
 import co.uk.zerod.domain.AgentId;
 import co.uk.zerod.domain.Health;
 import mtymes.javafixes.concurrency.Runner;
 import org.junit.Test;
 
-import javax.sql.DataSource;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.concurrent.CyclicBarrier;
 
 import static co.uk.zerod.domain.AgentId.agentId;
-import static co.uk.zerod.domain.TableName.tableName;
 import static co.uk.zerod.test.Condition.otherThan;
 import static co.uk.zerod.test.Random.randomHealth;
 import static co.uk.zerod.test.Random.randomUUIDString;
@@ -23,11 +20,9 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public abstract class SqlAgentDaoConcurrentTestBase {
+public abstract class AgentDaoConcurrentTestBase {
 
-    private Clock clock = new Clock();
-
-    private AgentDao dao = new SqlAgentDao(tableName("zd_agent"), getDataSource(), clock);
+    private AgentDao dao = getDao();
 
     @Test
     public void shouldNotFailIfHealthForTheSameAgentIsRegisteredConcurrently() {
@@ -154,5 +149,5 @@ public abstract class SqlAgentDaoConcurrentTestBase {
         }
     }
 
-    protected abstract DataSource getDataSource();
+    protected abstract AgentDao getDao();
 }

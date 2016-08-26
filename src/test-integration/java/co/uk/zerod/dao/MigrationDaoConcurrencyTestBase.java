@@ -4,18 +4,17 @@ import co.uk.zerod.domain.MigrationId;
 import mtymes.javafixes.concurrency.Runner;
 import org.junit.Test;
 
-import javax.sql.DataSource;
 import java.util.concurrent.CyclicBarrier;
 
-import static co.uk.zerod.domain.TableName.tableName;
 import static co.uk.zerod.test.Random.randomMigrationId;
 import static mtymes.javafixes.concurrency.Runner.runner;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public abstract class SqlMigrationDaoConcurrencyTestBase {
+public abstract class MigrationDaoConcurrencyTestBase {
 
-    private MigrationDao dao = new SqlMigrationDao(tableName("zd_migration"), getDataSource());
+    private MigrationDao dao = getDao();
 
     @Test
     public void shouldNotFailIfTheSameMigrationIsRegisteredConcurrently() throws Exception {
@@ -45,6 +44,7 @@ public abstract class SqlMigrationDaoConcurrencyTestBase {
 
                         runner.failedCount(), is(0)
                 );
+                assertThat(dao.findAllMigrations(), hasItem(migrationId));
             }
         } finally {
             runner.shutdownNow();
@@ -52,5 +52,5 @@ public abstract class SqlMigrationDaoConcurrencyTestBase {
     }
 
 
-    protected abstract DataSource getDataSource();
+    protected abstract MigrationDao getDao();
 }

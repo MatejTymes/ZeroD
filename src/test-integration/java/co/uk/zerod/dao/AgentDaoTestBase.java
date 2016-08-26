@@ -6,7 +6,6 @@ import co.uk.zerod.domain.AgentId;
 import co.uk.zerod.domain.Health;
 import org.junit.Test;
 
-import javax.sql.DataSource;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +13,6 @@ import java.util.Set;
 
 import static co.uk.zerod.domain.AgentId.agentId;
 import static co.uk.zerod.domain.Health.noHealth;
-import static co.uk.zerod.domain.TableName.tableName;
 import static co.uk.zerod.test.Condition.otherThan;
 import static co.uk.zerod.test.Random.*;
 import static co.uk.zerod.test.matcher.OptionalMatcher.isNotPresent;
@@ -28,11 +26,11 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 
-public abstract class SqlAgentDaoTestBase {
+public abstract class AgentDaoTestBase {
 
     private Clock clock = new Clock();
 
-    private AgentDao dao = new SqlAgentDao(tableName("zd_agent"), getDataSource(), clock);
+    private AgentDao dao = getDao();
 
     @Test
     public void shouldFindNoAgentsInEmptyDb() {
@@ -249,5 +247,5 @@ public abstract class SqlAgentDaoTestBase {
     }
 
 
-    protected abstract DataSource getDataSource();
+    protected abstract AgentDao getDao();
 }

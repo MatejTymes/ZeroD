@@ -15,7 +15,7 @@ import static org.junit.Assert.assertThat;
 
 public abstract class SqlMigrationDaoConcurrencyTestBase {
 
-    private SqlMigrationDao dao = new SqlMigrationDao(tableName("zd_migration"), getDataSource());
+    private MigrationDao dao = new SqlMigrationDao(tableName("zd_migration"), getDataSource());
 
     @Test
     public void shouldNotFailIfTheSameMigrationIsRegisteredConcurrently() throws Exception {

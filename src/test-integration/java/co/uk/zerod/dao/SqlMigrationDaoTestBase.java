@@ -17,7 +17,7 @@ import static org.junit.Assert.fail;
 
 public abstract class SqlMigrationDaoTestBase {
 
-    private SqlMigrationDao dao = new SqlMigrationDao(tableName("zd_migration"), getDataSource());
+    private MigrationDao dao = new SqlMigrationDao(tableName("zd_migration"), getDataSource());
 
     @Test
     public void shouldNotFindAnyMigrationsInEmptyDb() {

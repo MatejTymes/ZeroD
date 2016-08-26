@@ -27,7 +27,7 @@ public abstract class SqlAgentDaoConcurrentTestBase {
 
     private Clock clock = new Clock();
 
-    private SqlAgentDao dao = new SqlAgentDao(tableName("zd_agent"), getDataSource(), clock);
+    private AgentDao dao = new SqlAgentDao(tableName("zd_agent"), getDataSource(), clock);
 
     @Test
     public void shouldNotFailIfHealthForTheSameAgentIsRegisteredConcurrently() {

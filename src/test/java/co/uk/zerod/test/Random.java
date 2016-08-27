@@ -13,15 +13,15 @@ public class Random {
     }
 
     public static ReadWriteState randomReadWriteState() {
-        return pickRandomValue(ReadWriteState.values());
+        return pickRandomItem(ReadWriteState.values());
     }
 
     @SafeVarargs
-    public static <T> T pickRandomValue(T... values) {
+    public static <T> T pickRandomItem(T... values) {
         return values[randomInt(0, values.length - 1)];
     }
 
-    public static <T> T pickRandomValue(List<T> values) {
+    public static <T> T pickRandomItem(List<T> values) {
         return values.get(randomInt(0, values.size() - 1));
     }
 }

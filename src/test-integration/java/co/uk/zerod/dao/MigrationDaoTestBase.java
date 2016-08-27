@@ -4,6 +4,7 @@ import co.uk.zerod.domain.MigrationId;
 import org.junit.Test;
 
 import static co.uk.zerod.domain.MigrationId.migrationId;
+import static co.uk.zerod.test.Condition.otherThan;
 import static co.uk.zerod.test.Random.randomMigrationId;
 import static com.google.common.collect.Sets.newHashSet;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -62,8 +63,8 @@ public abstract class MigrationDaoTestBase {
     @Test
     public void shouldFindAllRegisteredMigrations() {
         MigrationId migrationId1 = randomMigrationId();
-        MigrationId migrationId2 = randomMigrationId();
-        MigrationId migrationId3 = randomMigrationId();
+        MigrationId migrationId2 = randomMigrationId(otherThan(migrationId1));
+        MigrationId migrationId3 = randomMigrationId(otherThan(migrationId1, migrationId2));
         dao.registerMigration(migrationId1);
         dao.registerMigration(migrationId2);
         dao.registerMigration(migrationId3);

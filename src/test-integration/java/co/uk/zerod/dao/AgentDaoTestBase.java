@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static co.uk.zerod.domain.AgentId.agentId;
 import static co.uk.zerod.domain.Health.noHealth;
 import static co.uk.zerod.test.Condition.otherThan;
 import static co.uk.zerod.test.Random.*;
@@ -34,7 +33,7 @@ public abstract class AgentDaoTestBase {
 
     @Test
     public void shouldFindNoAgentsInEmptyDb() {
-        assertThat(dao.findAgent(agentId("agent1")), isNotPresent());
+        assertThat(dao.findAgent(randomAgentId()), isNotPresent());
         assertThat(dao.findLiveAgents(), is(empty()));
         assertThat(dao.findDeadAgents(), is(empty()));
         assertThat(dao.findStaleLiveAgents(clock.now()), is(empty()));
@@ -42,7 +41,7 @@ public abstract class AgentDaoTestBase {
 
     @Test
     public void shouldBeAbleToRegisterAnAgent() {
-        AgentId agentId = agentId("agent1");
+        AgentId agentId = randomAgentId();
         Health health = randomHealth();
 
         // When
@@ -63,7 +62,7 @@ public abstract class AgentDaoTestBase {
 
     @Test
     public void shouldBeAbleToFindLiveAgent() {
-        AgentId agentId = agentId("agent1");
+        AgentId agentId = randomAgentId();
 
         // When
         Health health = randomLiveHealth();
@@ -81,7 +80,7 @@ public abstract class AgentDaoTestBase {
 
     @Test
     public void shouldBeAbleToFindDeadAgent() {
-        AgentId agentId = agentId("agent1");
+        AgentId agentId = randomAgentId();
 
         // When
         Health health = noHealth();
@@ -99,7 +98,7 @@ public abstract class AgentDaoTestBase {
 
     @Test
     public void shouldUpdateHealthIfNotUpdatedSinceDate() {
-        AgentId agentId = agentId("agent1");
+        AgentId agentId = randomAgentId();
         dao.registerAgentHealth(agentId, randomLiveHealth());
         Agent originalAgent = dao.findAgent(agentId).get();
 
@@ -119,7 +118,7 @@ public abstract class AgentDaoTestBase {
 
     @Test
     public void shouldUpdateHealthIfNotUpdatedSinceDate2() {
-        AgentId agentId = agentId("agent1");
+        AgentId agentId = randomAgentId();
         dao.registerAgentHealth(agentId, randomLiveHealth());
         Agent originalAgent = dao.findAgent(agentId).get();
 
@@ -139,7 +138,7 @@ public abstract class AgentDaoTestBase {
 
     @Test
     public void shouldNotUpdateHealthIfUpdatedSinceDate() {
-        AgentId agentId = agentId("agent1");
+        AgentId agentId = randomAgentId();
         dao.registerAgentHealth(agentId, randomLiveHealth());
         Agent originalAgent = dao.findAgent(agentId).get();
 
@@ -159,7 +158,7 @@ public abstract class AgentDaoTestBase {
 
     @Test
     public void shouldNotUpdateHealthIfExpetedHealthDoesntMatch() {
-        AgentId agentId = agentId("agent1");
+        AgentId agentId = randomAgentId();
         dao.registerAgentHealth(agentId, randomLiveHealth());
         Agent originalAgent = dao.findAgent(agentId).get();
 
@@ -179,7 +178,7 @@ public abstract class AgentDaoTestBase {
 
     @Test
     public void shouldEvaluateAgentsStalenessIfItAlive() {
-        AgentId agentId = agentId("agent1");
+        AgentId agentId = randomAgentId();
         dao.registerAgentHealth(agentId, randomHealth());
         Agent storedAgent = dao.findAgent(agentId).get();
 
@@ -191,7 +190,7 @@ public abstract class AgentDaoTestBase {
 
     @Test
     public void shouldNotEvaluateAgentsStalenessIfItDead() {
-        AgentId agentId = agentId("agent1");
+        AgentId agentId = randomAgentId();
         dao.registerAgentHealth(agentId, noHealth());
         Agent storedAgent = dao.findAgent(agentId).get();
 
@@ -203,12 +202,12 @@ public abstract class AgentDaoTestBase {
 
     @Test
     public void shouldFindStaleAgents() {
-        AgentId agentId1 = agentId("agent1");
-        AgentId agentId2 = agentId("agent2");
-        AgentId agentId3 = agentId("agent3");
-        AgentId agentId4 = agentId("agent4");
-        AgentId agentId5 = agentId("agent5");
-        AgentId agentId6 = agentId("agent6");
+        AgentId agentId1 = randomAgentId();
+        AgentId agentId2 = randomAgentId(otherThan(agentId1));
+        AgentId agentId3 = randomAgentId(otherThan(agentId1, agentId2));
+        AgentId agentId4 = randomAgentId(otherThan(agentId1, agentId2, agentId3));
+        AgentId agentId5 = randomAgentId(otherThan(agentId1, agentId2, agentId3, agentId4));
+        AgentId agentId6 = randomAgentId(otherThan(agentId1, agentId2, agentId3, agentId4, agentId5));
 
         Health deadlyHealth = noHealth();
         Health liveHealth = randomLiveHealth();

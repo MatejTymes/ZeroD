@@ -10,10 +10,9 @@ import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.concurrent.CyclicBarrier;
 
-import static co.uk.zerod.domain.AgentId.agentId;
 import static co.uk.zerod.test.Condition.otherThan;
+import static co.uk.zerod.test.Random.randomAgentId;
 import static co.uk.zerod.test.Random.randomHealth;
-import static co.uk.zerod.test.Random.randomUUIDString;
 import static co.uk.zerod.test.matcher.OptionalMatcher.isPresent;
 import static mtymes.javafixes.concurrency.Runner.runner;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -33,7 +32,7 @@ public abstract class AgentDaoConcurrentTestBase {
 
         try {
             for (int attempt = 1; attempt <= attemptsCount; attempt++) {
-                AgentId agentId = agentId(randomUUIDString());
+                AgentId agentId = randomAgentId();
                 Health health = randomHealth();
 
                 // When
@@ -71,7 +70,7 @@ public abstract class AgentDaoConcurrentTestBase {
 
         try {
             for (int attempt = 1; attempt <= attemptsCount; attempt++) {
-                AgentId agentId = agentId(randomUUIDString());
+                AgentId agentId = randomAgentId();
                 Health oldHealth = randomHealth();
                 dao.registerAgentHealth(agentId, oldHealth);
 
@@ -112,7 +111,7 @@ public abstract class AgentDaoConcurrentTestBase {
 
         try {
             for (int attempt = 1; attempt <= attemptsCount; attempt++) {
-                AgentId agentId = agentId(randomUUIDString());
+                AgentId agentId = randomAgentId();
                 Health oldHealth = randomHealth();
                 dao.registerAgentHealth(agentId, oldHealth);
 

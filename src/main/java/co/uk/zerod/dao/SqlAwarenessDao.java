@@ -7,7 +7,6 @@ import co.uk.zerod.domain.TableName;
 import mtymes.javafixes.object.Tuple;
 
 import javax.sql.DataSource;
-import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.Optional;
 
@@ -29,7 +28,6 @@ public class SqlAwarenessDao extends BaseSqlDao implements AwarenessDao {
     }
 
     // todo: add concurrency test
-    // todo: test
     @Override
     public void registerAwareness(MigrationId migrationId, AgentId agentId, Awareness awareness) {
         upsert(
@@ -57,17 +55,18 @@ public class SqlAwarenessDao extends BaseSqlDao implements AwarenessDao {
         );
     }
 
-    // todo: test
     @Override
-    public Map<AgentId, Optional<Awareness>> findLiveAgentsAwareness(MigrationId migrationId, ZonedDateTime stillAliveAt) {
+    public Map<AgentId, Optional<Awareness>> findLiveAgentsAwareness(MigrationId migrationId) {
         return select("" +
                         "SELECT ag.id AS agentId, aw.is_aware_of AS isAwareOf " +
                         "FROM " + agentTable + " ag " +
                         "LEFT JOIN " + awarenessTable + " aw " +
-                        "ON ag.id = aw.agent_id",
+                        "ON ag.id = aw.agent_id AND aw.migration_id = ?" +
+                        "WHERE ag.health > 0",
+                ps -> ps.setString(1, migrationId.value()),
                 rs -> tuple(
                         agentId(rs.getString("agentId")),
-                        Optional.of((Boolean) rs.getObject("isAwareOf")).map(value -> value ? Aware : NotAware)
+                        Optional.ofNullable((Boolean) rs.getObject("isAwareOf")).map(value -> value ? Aware : NotAware)
                 )
         ).stream().collect(toMap(Tuple::a, Tuple::b));
     }

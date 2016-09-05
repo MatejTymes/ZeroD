@@ -4,6 +4,7 @@ import mtymes.javafixes.concurrency.ReusableCountLatch;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static java.util.Arrays.stream;
@@ -26,9 +27,11 @@ public class ReadWriteGuide {
     }
 
     public <T> T write(Function<WriteState, T> writer) {
+        // todo: lock this section
         WriteState writeState = transitionToState.writeState;
         ReusableCountLatch writeCounter = writeCounters.get(writeState);
         writeCounter.increment();
+
         try {
 
             return writer.apply(writeState);
@@ -39,15 +42,37 @@ public class ReadWriteGuide {
     }
 
     public <T> T read(Function<ReadState, T> reader) {
+        // todo: lock this section
         ReadState readState = transitionToState.readState;
         ReusableCountLatch readCounter = readCounters.get(readState);
         readCounter.increment();
+
         try {
 
             return reader.apply(readState);
 
         } finally {
             readCounter.decrement();
+        }
+    }
+
+    // todo: test
+    public <T> T readWrite(BiFunction<ReadState, WriteState, T> readWriter) {
+        // todo: lock this section
+        ReadState readState = transitionToState.readState;
+        WriteState writeState = transitionToState.writeState;
+        ReusableCountLatch readCounter = readCounters.get(readState);
+        ReusableCountLatch writeCounter = writeCounters.get(writeState);
+        readCounter.increment();
+        writeCounter.increment();
+
+        try {
+
+            return readWriter.apply(readState, writeState);
+
+        } finally {
+            readCounter.decrement();
+            writeCounter.decrement();
         }
     }
 

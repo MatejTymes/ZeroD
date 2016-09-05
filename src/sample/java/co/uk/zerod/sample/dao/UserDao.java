@@ -24,9 +24,9 @@ public class UserDao {
     }
 
     public UserId storeUser(User user) {
-        return accessGuide.write(FULL_NAME_MIGRATION, writeState -> {
-            UserId userId = userId(randomUUID());
+        UserId userId = userId(randomUUID());
 
+        accessGuide.write(FULL_NAME_MIGRATION, writeState -> {
             Map<String, String> values = newHashMap();
             if (writeState == WriteOld || writeState == WriteBoth) {
                 values.put("fullName", user.firstName + " " + user.lastName);
@@ -37,9 +37,9 @@ public class UserDao {
             }
 
             store.insert(userId, values);
-
-            return userId;
         });
+
+        return userId;
     }
 
     public User findUser(UserId userId) {

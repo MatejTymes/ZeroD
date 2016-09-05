@@ -5,6 +5,7 @@ import mtymes.javafixes.concurrency.ReusableCountLatch;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static java.util.Arrays.stream;
@@ -26,50 +27,41 @@ public class ReadWriteGuide {
         stream(WriteState.values()).forEach(writeState -> writeCounters.put(writeState, new ReusableCountLatch()));
     }
 
-    public <T> T write(Function<WriteState, T> writer) {
-        // todo: lock this section
-        WriteState writeState = transitionToState.writeState;
-        ReusableCountLatch writeCounter = writeCounters.get(writeState);
-        writeCounter.increment();
-
-        try {
-
-            return writer.apply(writeState);
-
-        } finally {
-            writeCounter.decrement();
-        }
-    }
-
     public <T> T read(Function<ReadState, T> reader) {
-        // todo: lock this section
         ReadState readState = transitionToState.readState;
         ReusableCountLatch readCounter = readCounters.get(readState);
         readCounter.increment();
 
         try {
-
             return reader.apply(readState);
-
         } finally {
             readCounter.decrement();
         }
     }
 
-    // todo: test
-    public <T> T readWrite(BiFunction<ReadState, WriteState, T> readWriter) {
-        // todo: lock this section
-        ReadState readState = transitionToState.readState;
+    public void write(Consumer<WriteState> writer) {
         WriteState writeState = transitionToState.writeState;
+        ReusableCountLatch writeCounter = writeCounters.get(writeState);
+        writeCounter.increment();
+
+        try {
+            writer.accept(writeState);
+        } finally {
+            writeCounter.decrement();
+        }
+    }
+
+    public <T> T readWrite(BiFunction<ReadState, WriteState, T> readWriter) {
+        ReadWriteState stateToUse = transitionToState;
+        ReadState readState = stateToUse.readState;
+        WriteState writeState = stateToUse.writeState;
         ReusableCountLatch readCounter = readCounters.get(readState);
         ReusableCountLatch writeCounter = writeCounters.get(writeState);
         readCounter.increment();
         writeCounter.increment();
 
         try {
-
             return readWriter.apply(readState, writeState);
-
         } finally {
             readCounter.decrement();
             writeCounter.decrement();

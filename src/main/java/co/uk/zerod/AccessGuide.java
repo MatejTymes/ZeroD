@@ -4,6 +4,7 @@ import co.uk.zerod.domain.MigrationId;
 
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 // todo: rename to MigrationGuide
@@ -16,17 +17,16 @@ public class AccessGuide {
         this.readWriteGuides = readWriteGuides;
     }
 
-    public <T> T write(MigrationId migrationId, Function<WriteState, T> writer) {
-        return getReadWriteGuide(migrationId)
-                .write(writer);
-    }
-
     public <T> T read(MigrationId migrationId, Function<ReadState, T> reader) {
         return getReadWriteGuide(migrationId)
                 .read(reader);
     }
 
-    // todo: test
+    public void write(MigrationId migrationId, Consumer<WriteState> writer) {
+        getReadWriteGuide(migrationId)
+                .write(writer);
+    }
+
     public <T> T readWrite(MigrationId migrationId, BiFunction<ReadState, WriteState, T> readWriter) {
         return getReadWriteGuide(migrationId)
                 .readWrite(readWriter);

@@ -14,10 +14,10 @@ import static mtymes.javafixes.concurrency.Runner.runner;
 import static zerod.ReadState.ReadNew;
 import static zerod.ReadState.ReadOld;
 import static zerod.WriteState.*;
-import static zerod.guide.ReadWriteHelper.WriteBothConfig.*;
+import static zerod.guide.GuideHelper.WriteBothConfig.*;
 
 // todo: test this
-public class ReadWriteHelper {
+public class GuideHelper {
 
     public enum WriteBothConfig {
 

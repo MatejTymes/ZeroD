@@ -19,19 +19,19 @@ public class AccessGuide {
         this.readWriteGuides = readWriteGuides;
     }
 
-    public <T> T read(MigrationId migrationId, Function<ReadState, T> reader) {
+    public <T> T runReadOp(MigrationId migrationId, Function<ReadState, T> reader) {
         return getReadWriteGuide(migrationId)
-                .read(reader);
+                .runReadOp(reader);
     }
 
-    public void write(MigrationId migrationId, Consumer<WriteState> writer) {
+    public void runWriteOp(MigrationId migrationId, Consumer<WriteState> writer) {
         getReadWriteGuide(migrationId)
-                .write(writer);
+                .runWriteOp(writer);
     }
 
-    public <T> T readWrite(MigrationId migrationId, BiFunction<ReadState, WriteState, T> readWriter) {
+    public <T> T runReadWriteOp(MigrationId migrationId, BiFunction<ReadState, WriteState, T> readWriter) {
         return getReadWriteGuide(migrationId)
-                .readWrite(readWriter);
+                .runReadWriteOp(readWriter);
     }
 
     private ReadWriteGuide getReadWriteGuide(MigrationId migrationId) {

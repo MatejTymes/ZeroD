@@ -18,18 +18,18 @@ public class ImmutableReadWriteGuide implements ReadWriteGuide {
     }
 
     @Override
-    public <T> T read(Function<ReadState, T> reader) {
+    public <T> T runReadOp(Function<ReadState, T> reader) {
         return reader.apply(currentState.readState);
     }
 
     @Override
-    public void write(Consumer<WriteState> writer) {
+    public void runWriteOp(Consumer<WriteState> writer) {
         writer.accept(currentState.writeState);
 
     }
 
     @Override
-    public <T> T readWrite(BiFunction<ReadState, WriteState, T> readWriter) {
+    public <T> T runReadWriteOp(BiFunction<ReadState, WriteState, T> readWriter) {
         return readWriter.apply(currentState.readState, currentState.writeState);
     }
 }

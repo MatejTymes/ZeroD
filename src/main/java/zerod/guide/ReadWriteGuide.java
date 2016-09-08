@@ -9,9 +9,9 @@ import java.util.function.Function;
 
 public interface ReadWriteGuide {
 
-    <T> T read(Function<ReadState, T> reader);
+    <T> T runReadOp(Function<ReadState, T> reader);
 
-    void write(Consumer<WriteState> writer);
+    void runWriteOp(Consumer<WriteState> writer);
 
-    <T> T readWrite(BiFunction<ReadState, WriteState, T> readWriter);
+    <T> T runReadWriteOp(BiFunction<ReadState, WriteState, T> readWriter);
 }

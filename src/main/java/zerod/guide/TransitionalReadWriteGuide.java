@@ -13,6 +13,7 @@ import java.util.function.Function;
 
 import static java.util.Arrays.stream;
 
+// todo: add possibility to transition to previous states (state revert)
 public class TransitionalReadWriteGuide implements ReadWriteGuide {
 
     private final Map<ReadState, ReusableCountLatch> readCounters = new HashMap<>();
@@ -31,7 +32,7 @@ public class TransitionalReadWriteGuide implements ReadWriteGuide {
     }
 
     @Override
-    public <T> T read(Function<ReadState, T> reader) {
+    public <T> T runReadOp(Function<ReadState, T> reader) {
         ReadState readState = transitionToState.readState;
         ReusableCountLatch readCounter = readCounters.get(readState);
         readCounter.increment();
@@ -44,7 +45,7 @@ public class TransitionalReadWriteGuide implements ReadWriteGuide {
     }
 
     @Override
-    public void write(Consumer<WriteState> writer) {
+    public void runWriteOp(Consumer<WriteState> writer) {
         WriteState writeState = transitionToState.writeState;
         ReusableCountLatch writeCounter = writeCounters.get(writeState);
         writeCounter.increment();
@@ -57,7 +58,7 @@ public class TransitionalReadWriteGuide implements ReadWriteGuide {
     }
 
     @Override
-    public <T> T readWrite(BiFunction<ReadState, WriteState, T> readWriter) {
+    public <T> T runReadWriteOp(BiFunction<ReadState, WriteState, T> readWriter) {
         ReadWriteState stateToUse = transitionToState;
         ReadState readState = stateToUse.readState;
         WriteState writeState = stateToUse.writeState;

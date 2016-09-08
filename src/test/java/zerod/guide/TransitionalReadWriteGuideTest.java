@@ -51,7 +51,7 @@ public class TransitionalReadWriteGuideTest {
         UUID expectedResponse = randomUUID();
 
         // When
-        UUID actualResponse = readWriteGuide.read(readState -> expectedResponse);
+        UUID actualResponse = readWriteGuide.runReadOp(readState -> expectedResponse);
 
         // Then
         assertThat(actualResponse, equalTo(expectedResponse));
@@ -64,7 +64,7 @@ public class TransitionalReadWriteGuideTest {
         UUID expectedResponse = randomUUID();
 
         // When
-        UUID actualResponse = readWriteGuide.readWrite((readState, writeState) -> expectedResponse);
+        UUID actualResponse = readWriteGuide.runReadWriteOp((readState, writeState) -> expectedResponse);
 
         // Then
         assertThat(actualResponse, equalTo(expectedResponse));
@@ -149,7 +149,7 @@ public class TransitionalReadWriteGuideTest {
 
     private ReadState actualReadState(ReadWriteGuide readWriteGuide) {
         AtomicReference<ReadState> readStateToUse = new AtomicReference<>();
-        readWriteGuide.read(readState -> {
+        readWriteGuide.runReadOp(readState -> {
             readStateToUse.set(readState);
             return null;
         });
@@ -158,7 +158,7 @@ public class TransitionalReadWriteGuideTest {
 
     private WriteState actualWriteState(ReadWriteGuide readWriteGuide) {
         AtomicReference<WriteState> writeStateToUse = new AtomicReference<>();
-        readWriteGuide.write(writeState -> {
+        readWriteGuide.runWriteOp(writeState -> {
             writeStateToUse.set(writeState);
         });
         return writeStateToUse.get();
@@ -166,7 +166,7 @@ public class TransitionalReadWriteGuideTest {
 
     private Tuple<ReadState, WriteState> actualReadWriteState(ReadWriteGuide readWriteGuide) {
         AtomicReference<Tuple<ReadState, WriteState>> readStateToUse = new AtomicReference<>();
-        readWriteGuide.readWrite((readState, writeState) -> {
+        readWriteGuide.runReadWriteOp((readState, writeState) -> {
             readStateToUse.set(tuple(readState, writeState));
             return null;
         });

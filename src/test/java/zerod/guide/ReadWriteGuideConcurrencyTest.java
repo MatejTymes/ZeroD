@@ -1,9 +1,13 @@
-package zerod;
+package zerod.guide;
 
 import mtymes.javafixes.object.Tuple;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import zerod.ReadState;
+import zerod.ReadWriteState;
+import zerod.Starter;
+import zerod.WriteState;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;

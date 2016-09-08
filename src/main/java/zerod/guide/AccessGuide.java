@@ -1,5 +1,7 @@
-package zerod;
+package zerod.guide;
 
+import zerod.ReadState;
+import zerod.WriteState;
 import zerod.domain.MigrationId;
 
 import java.util.Map;

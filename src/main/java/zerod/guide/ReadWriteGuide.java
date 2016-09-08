@@ -1,6 +1,9 @@
-package zerod;
+package zerod.guide;
 
 import mtymes.javafixes.concurrency.ReusableCountLatch;
+import zerod.ReadState;
+import zerod.ReadWriteState;
+import zerod.WriteState;
 
 import java.util.HashMap;
 import java.util.Map;

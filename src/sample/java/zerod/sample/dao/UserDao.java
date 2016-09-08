@@ -1,6 +1,6 @@
 package zerod.sample.dao;
 
-import zerod.AccessGuide;
+import zerod.guide.AccessGuide;
 import zerod.sample.domain.User;
 import zerod.sample.domain.UserId;
 

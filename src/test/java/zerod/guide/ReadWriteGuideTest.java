@@ -1,7 +1,10 @@
-package zerod;
+package zerod.guide;
 
 import mtymes.javafixes.object.Tuple;
 import org.junit.Test;
+import zerod.ReadState;
+import zerod.ReadWriteState;
+import zerod.WriteState;
 
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;

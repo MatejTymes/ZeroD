@@ -1,7 +1,7 @@
 package zerod.wip;
 
-import zerod.AccessGuide;
 import zerod.domain.MigrationId;
+import zerod.guide.AccessGuide;
 
 public class MigrationCoordinator {
 

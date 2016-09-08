@@ -22,13 +22,13 @@ import static zerod.WriteState.WriteBoth;
 import static zerod.WriteState.WriteNew;
 import static zerod.test.Random.randomReadWriteState;
 
-public class ReadWriteGuideTest {
+public class TransitionalReadWriteGuideTest {
 
     @Test
     public void shouldProvideProperReadAndWriteState() {
         for (ReadWriteState readWriteState : ReadWriteState.values()) {
 
-            ReadWriteGuide readWriteGuide = new ReadWriteGuide(readWriteState);
+            TransitionalReadWriteGuide readWriteGuide = new TransitionalReadWriteGuide(readWriteState);
 
             // When
             ReadState usedReadState = actualReadState(readWriteGuide);
@@ -47,7 +47,7 @@ public class ReadWriteGuideTest {
     @Test
     public void shouldReturnProperValueOnReadOperation() {
         ReadWriteState expectedState = randomReadWriteState();
-        ReadWriteGuide readWriteGuide = new ReadWriteGuide(expectedState);
+        ReadWriteGuide readWriteGuide = new TransitionalReadWriteGuide(expectedState);
         UUID expectedResponse = randomUUID();
 
         // When
@@ -60,7 +60,7 @@ public class ReadWriteGuideTest {
     @Test
     public void shouldReturnProperValueOnReadWriteOperation() {
         ReadWriteState expectedState = randomReadWriteState();
-        ReadWriteGuide readWriteGuide = new ReadWriteGuide(expectedState);
+        ReadWriteGuide readWriteGuide = new TransitionalReadWriteGuide(expectedState);
         UUID expectedResponse = randomUUID();
 
         // When
@@ -72,7 +72,7 @@ public class ReadWriteGuideTest {
 
     @Test
     public void shouldBeAbleToSwitchToNextState() {
-        ReadWriteGuide readWriteGuide = new ReadWriteGuide(ReadOld_WriteOld);
+        TransitionalReadWriteGuide readWriteGuide = new TransitionalReadWriteGuide(ReadOld_WriteOld);
 
         readWriteGuide.switchState(ReadOld_WriteBoth);
         assertThat(readWriteGuide.getCurrentState(), equalTo(ReadOld_WriteBoth));
@@ -100,7 +100,7 @@ public class ReadWriteGuideTest {
     public void shouldBeAbleToSwitchToTheSameState() {
         for (ReadWriteState readWriteState : ReadWriteState.values()) {
 
-            ReadWriteGuide readWriteGuide = new ReadWriteGuide(readWriteState);
+            TransitionalReadWriteGuide readWriteGuide = new TransitionalReadWriteGuide(readWriteState);
 
             // When
             readWriteGuide.switchState(readWriteState);
@@ -113,9 +113,9 @@ public class ReadWriteGuideTest {
 
     @Test
     public void shouldFailOnInvalidStateTransition() {
-        ReadWriteGuide readWriteGuide;
+        TransitionalReadWriteGuide readWriteGuide;
 
-        readWriteGuide = new ReadWriteGuide(ReadOld_WriteOld);
+        readWriteGuide = new TransitionalReadWriteGuide(ReadOld_WriteOld);
         for (ReadWriteState invalidTransitionalStates : asList(ReadNew_WriteBoth, ReadNew_WriteNew)) {
             try {
                 readWriteGuide.switchState(invalidTransitionalStates);
@@ -125,7 +125,7 @@ public class ReadWriteGuideTest {
             }
         }
 
-        readWriteGuide = new ReadWriteGuide(ReadOld_WriteBoth);
+        readWriteGuide = new TransitionalReadWriteGuide(ReadOld_WriteBoth);
         for (ReadWriteState invalidTransitionalStates : asList(ReadOld_WriteOld, ReadNew_WriteNew)) {
             try {
                 readWriteGuide.switchState(invalidTransitionalStates);
@@ -135,7 +135,7 @@ public class ReadWriteGuideTest {
             }
         }
 
-        readWriteGuide = new ReadWriteGuide(ReadNew_WriteNew);
+        readWriteGuide = new TransitionalReadWriteGuide(ReadNew_WriteNew);
         for (ReadWriteState invalidTransitionalStates : asList(ReadOld_WriteOld, ReadOld_WriteBoth)) {
             try {
                 readWriteGuide.switchState(invalidTransitionalStates);

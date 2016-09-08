@@ -24,7 +24,7 @@ import static zerod.ReadWriteState.*;
 import static zerod.WriteState.WriteBoth;
 import static zerod.WriteState.WriteNew;
 
-public class ReadWriteGuideConcurrencyTest {
+public class TransitionalReadWriteGuideConcurrencyTest {
 
     private ExecutorService executor;
 
@@ -41,7 +41,7 @@ public class ReadWriteGuideConcurrencyTest {
 
     @Test
     public void shouldBlockStateSwitchIfActiveReadOpHasDifferentReadState() throws Exception {
-        ReadWriteGuide guide = new ReadWriteGuide(ReadOld_WriteBoth);
+        TransitionalReadWriteGuide guide = new TransitionalReadWriteGuide(ReadOld_WriteBoth);
 
         long durationInMS = 300;
         Starter readStarter = submitStartableReadOp(guide, durationInMS);
@@ -60,7 +60,7 @@ public class ReadWriteGuideConcurrencyTest {
 
     @Test
     public void shouldBlockStateSwitchIfActiveWritOpHasDifferentWriteState1() {
-        ReadWriteGuide guide = new ReadWriteGuide(ReadOld_WriteOld);
+        TransitionalReadWriteGuide guide = new TransitionalReadWriteGuide(ReadOld_WriteOld);
 
         long durationInMS = 300;
         Starter writeStarter = submitStartableWriteOp(guide, durationInMS);
@@ -79,7 +79,7 @@ public class ReadWriteGuideConcurrencyTest {
 
     @Test
     public void shouldBlockStateSwitchIfActiveWriteOpHasDifferentWriteState2() {
-        ReadWriteGuide guide = new ReadWriteGuide(ReadNew_WriteBoth);
+        TransitionalReadWriteGuide guide = new TransitionalReadWriteGuide(ReadNew_WriteBoth);
 
 
         long durationInMS = 300;
@@ -102,7 +102,7 @@ public class ReadWriteGuideConcurrencyTest {
         for (Tuple<ReadWriteState, ReadWriteState> fromToState : asList(
                 tuple(ReadOld_WriteOld, ReadOld_WriteBoth), tuple(ReadOld_WriteBoth, ReadNew_WriteBoth), tuple(ReadNew_WriteBoth, ReadNew_WriteNew)
         )) {
-            ReadWriteGuide guide = new ReadWriteGuide(fromToState.a);
+            TransitionalReadWriteGuide guide = new TransitionalReadWriteGuide(fromToState.a);
 
             long durationInMS = 300;
             Starter readStarter = submitStartableReadWriteOp(guide, durationInMS);
@@ -122,7 +122,7 @@ public class ReadWriteGuideConcurrencyTest {
 
     @Test
     public void shouldNotBlockStateSwitchIfActiveReadOpHaveTheSameReadState1() {
-        ReadWriteGuide guide = new ReadWriteGuide(ReadOld_WriteOld);
+        TransitionalReadWriteGuide guide = new TransitionalReadWriteGuide(ReadOld_WriteOld);
 
         long durationInMS = 300;
         Starter readStarter = submitStartableReadOp(guide, durationInMS);
@@ -141,7 +141,7 @@ public class ReadWriteGuideConcurrencyTest {
 
     @Test
     public void shouldNotBlockStateSwitchIfActiveReadOpHaveTheSameReadState2() {
-        ReadWriteGuide guide = new ReadWriteGuide(ReadNew_WriteBoth);
+        TransitionalReadWriteGuide guide = new TransitionalReadWriteGuide(ReadNew_WriteBoth);
 
         long durationInMS = 300;
         Starter readStarter = submitStartableReadOp(guide, durationInMS);
@@ -160,7 +160,7 @@ public class ReadWriteGuideConcurrencyTest {
 
     @Test
     public void shouldNotBlockStateSwitchIfActiveWritOpHaveTheSameWriteState() {
-        ReadWriteGuide guide = new ReadWriteGuide(ReadOld_WriteBoth);
+        TransitionalReadWriteGuide guide = new TransitionalReadWriteGuide(ReadOld_WriteBoth);
 
         long durationInMS = 300;
         Starter writeStarter = submitStartableWriteOp(guide, durationInMS);
@@ -179,7 +179,7 @@ public class ReadWriteGuideConcurrencyTest {
 
     @Test
     public void shouldUseNewReadStatusWhileSwitchingAndNotBlock1() {
-        ReadWriteGuide guide = new ReadWriteGuide(ReadOld_WriteBoth);
+        TransitionalReadWriteGuide guide = new TransitionalReadWriteGuide(ReadOld_WriteBoth);
 
         long durationInMS = 600;
         submitStartableReadOp(guide, durationInMS)
@@ -201,7 +201,7 @@ public class ReadWriteGuideConcurrencyTest {
 
     @Test
     public void shouldUseNewWriteStatusWhileSwitchingAndNotBlock1() {
-        ReadWriteGuide guide = new ReadWriteGuide(ReadOld_WriteOld);
+        TransitionalReadWriteGuide guide = new TransitionalReadWriteGuide(ReadOld_WriteOld);
 
         long durationInMS = 600;
         submitStartableWriteOp(guide, durationInMS)
@@ -224,7 +224,7 @@ public class ReadWriteGuideConcurrencyTest {
 
     @Test
     public void shouldUseNewWriteStatusWhileSwitchingAndNotBlock2() {
-        ReadWriteGuide guide = new ReadWriteGuide(ReadNew_WriteBoth);
+        TransitionalReadWriteGuide guide = new TransitionalReadWriteGuide(ReadNew_WriteBoth);
 
         long durationInMS = 600;
         submitStartableWriteOp(guide, durationInMS)
@@ -247,7 +247,7 @@ public class ReadWriteGuideConcurrencyTest {
 
     @Test
     public void shouldHaveDifferentCurrentAndTransitionToStateIfSwitchHasNotCompleted() {
-        ReadWriteGuide guide = new ReadWriteGuide(ReadOld_WriteBoth);
+        TransitionalReadWriteGuide guide = new TransitionalReadWriteGuide(ReadOld_WriteBoth);
 
         // When
         long durationInMS = 600;
@@ -262,7 +262,7 @@ public class ReadWriteGuideConcurrencyTest {
 
     @Test
     public void shouldNotBeAbleToSwitchToNextStateBeforeThePreviousSwitchHasEnded() {
-        ReadWriteGuide guide = new ReadWriteGuide(ReadOld_WriteOld);
+        TransitionalReadWriteGuide guide = new TransitionalReadWriteGuide(ReadOld_WriteOld);
 
         long durationInMS = 600;
         submitStartableWriteOp(guide, durationInMS)
@@ -346,7 +346,7 @@ public class ReadWriteGuideConcurrencyTest {
         return readWriteStarter;
     }
 
-    private void switchStateOnNewThread(ReadWriteGuide guide, ReadWriteState newState) {
+    private void switchStateOnNewThread(TransitionalReadWriteGuide guide, ReadWriteState newState) {
         executor.submit(() -> guide.switchState(newState));
         try {
             Thread.sleep(50L);

@@ -1,10 +1,13 @@
 package zerod.guide;
 
 import mtymes.javafixes.concurrency.Runner;
+import mtymes.javafixes.concurrency.Task;
 import zerod.ReadState;
 import zerod.WriteState;
+import zerod.experimental.exception.MagicWrappingException;
 
 import java.util.Optional;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
@@ -14,6 +17,7 @@ import static mtymes.javafixes.concurrency.Runner.runner;
 import static zerod.ReadState.ReadNew;
 import static zerod.ReadState.ReadOld;
 import static zerod.WriteState.*;
+import static zerod.experimental.exception.MagicUtil.wrapExceptionsIntoMagic;
 import static zerod.guide.GuideHelper.WriteBothConfig.*;
 
 // todo: test this
@@ -35,6 +39,20 @@ public class GuideHelper {
                     ? oldReader.get()
                     : newReader.get();
         });
+    }
+
+    public static <T> T runReadOpWithMagic(ReadWriteGuide guide, Callable<T> oldReader, Callable<T> newReader) {
+        T value = null;
+        try {
+            value = runReadOp(
+                    guide,
+                    wrapExceptionsIntoMagic(oldReader),
+                    wrapExceptionsIntoMagic(newReader)
+            );
+        } catch (MagicWrappingException e) {
+            e.throwWrappedExceptionWithMagic();
+        }
+        return value;
     }
 
     public static void runWriteOp(ReadWriteGuide guide, Runnable oldWriter, Runnable newWriter, WriteBothConfig writeBothConfig) {
@@ -90,6 +108,19 @@ public class GuideHelper {
                 }
             }
         });
+    }
+
+    public static void runWriteOpWithMagic(ReadWriteGuide guide, Task oldWriter, Task newWriter, WriteBothConfig writeBothConfig) {
+        try {
+            runWriteOp(
+                    guide,
+                    wrapExceptionsIntoMagic(oldWriter),
+                    wrapExceptionsIntoMagic(newWriter),
+                    writeBothConfig
+            );
+        } catch (MagicWrappingException e) {
+            e.throwWrappedExceptionWithMagic();
+        }
     }
 
     public static <T> T runReadWriteOp(ReadWriteGuide guide, Supplier<T> oldReadWriter, Supplier<T> newReadWriter, WriteBothConfig writeBothConfig) {
@@ -170,6 +201,21 @@ public class GuideHelper {
                 return (readState == ReadOld) ? oldValue : newValue;
             }
         });
+    }
+
+    public static <T> T runReadWriteOpWithMagic(ReadWriteGuide guide, Callable<T> oldReadWriter, Callable<T> newReadWriter, WriteBothConfig writeBothConfig) {
+        T value = null;
+        try {
+            value = runReadWriteOp(
+                    guide,
+                    wrapExceptionsIntoMagic(oldReadWriter),
+                    wrapExceptionsIntoMagic(newReadWriter),
+                    writeBothConfig
+            );
+        } catch (MagicWrappingException e) {
+            e.throwWrappedExceptionWithMagic();
+        }
+        return value;
     }
 
     private static void checkIsValid(ReadState readState) {

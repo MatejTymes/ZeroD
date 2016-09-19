@@ -1,9 +1,9 @@
 package zerod.wip;
 
 import mtymes.javafixes.concurrency.Task;
-import zerod.ReadWriteState;
+import zerod.state.ReadWriteState;
 
-import static zerod.ReadWriteState.*;
+import static zerod.state.ReadWriteState.*;
 
 public class MigrationStepsBuilder {
 

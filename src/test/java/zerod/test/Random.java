@@ -1,6 +1,6 @@
 package zerod.test;
 
-import zerod.ReadWriteState;
+import zerod.state.ReadWriteState;
 
 import java.util.List;
 

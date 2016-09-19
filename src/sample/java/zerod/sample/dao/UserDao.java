@@ -8,10 +8,10 @@ import java.util.Map;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static java.util.UUID.randomUUID;
-import static zerod.ReadState.ReadOld;
-import static zerod.WriteState.*;
 import static zerod.sample.MigrationHelper.FULL_NAME_MIGRATION;
 import static zerod.sample.domain.UserId.userId;
+import static zerod.state.ReadState.ReadOld;
+import static zerod.state.WriteState.*;
 
 public class UserDao {
 

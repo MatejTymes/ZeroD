@@ -1,4 +1,4 @@
-package zerod;
+package zerod.state;
 
 public enum WriteState {
 

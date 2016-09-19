@@ -4,10 +4,10 @@ import mtymes.javafixes.object.Tuple;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import zerod.ReadState;
-import zerod.ReadWriteState;
 import zerod.Starter;
-import zerod.WriteState;
+import zerod.state.ReadState;
+import zerod.state.ReadWriteState;
+import zerod.state.WriteState;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -19,10 +19,10 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static mtymes.javafixes.object.Tuple.tuple;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
-import static zerod.ReadState.ReadNew;
-import static zerod.ReadWriteState.*;
-import static zerod.WriteState.WriteBoth;
-import static zerod.WriteState.WriteNew;
+import static zerod.state.ReadState.ReadNew;
+import static zerod.state.ReadWriteState.*;
+import static zerod.state.WriteState.WriteBoth;
+import static zerod.state.WriteState.WriteNew;
 
 public class TransitionalReadWriteGuideConcurrencyTest {
 

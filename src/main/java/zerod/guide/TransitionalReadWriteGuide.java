@@ -1,9 +1,7 @@
 package zerod.guide;
 
 import mtymes.javafixes.concurrency.ReusableCountLatch;
-import zerod.ReadState;
-import zerod.ReadWriteState;
-import zerod.WriteState;
+import zerod.state.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,8 +11,10 @@ import java.util.function.Function;
 
 import static java.util.Arrays.stream;
 
-// todo: add possibility to transition to previous states (state revert)
 public class TransitionalReadWriteGuide implements ReadWriteGuide {
+
+    // todo: make part of constructor
+    private final StateMachine<ReadWriteState> stateMachine = new CoreStateMachine();
 
     private final Map<ReadState, ReusableCountLatch> readCounters = new HashMap<>();
     private final Map<WriteState, ReusableCountLatch> writeCounters = new HashMap<>();
@@ -76,7 +76,7 @@ public class TransitionalReadWriteGuide implements ReadWriteGuide {
     }
 
     public synchronized void switchState(ReadWriteState toState) {
-        if (currentState.ordinal() != toState.ordinal() && currentState.ordinal() + 1 != toState.ordinal()) {
+        if (!stateMachine.canTransitionFromTo(currentState, toState)) {
             throw new IllegalStateException("Unable to transition from '" + currentState + "' state to '" + toState + "' state");
         }
         this.transitionToState = toState;

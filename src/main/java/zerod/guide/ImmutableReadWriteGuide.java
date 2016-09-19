@@ -1,8 +1,8 @@
 package zerod.guide;
 
-import zerod.ReadState;
-import zerod.ReadWriteState;
-import zerod.WriteState;
+import zerod.state.ReadState;
+import zerod.state.ReadWriteState;
+import zerod.state.WriteState;
 
 import java.util.function.BiFunction;
 import java.util.function.Consumer;

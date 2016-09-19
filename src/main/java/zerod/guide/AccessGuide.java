@@ -1,8 +1,8 @@
 package zerod.guide;
 
-import zerod.ReadState;
-import zerod.WriteState;
 import zerod.domain.MigrationId;
+import zerod.state.ReadState;
+import zerod.state.WriteState;
 
 import java.util.Map;
 import java.util.function.BiFunction;

@@ -2,9 +2,9 @@ package zerod.guide;
 
 import mtymes.javafixes.concurrency.Runner;
 import mtymes.javafixes.concurrency.Task;
-import zerod.ReadState;
-import zerod.WriteState;
 import zerod.experimental.exception.MagicWrappingException;
+import zerod.state.ReadState;
+import zerod.state.WriteState;
 
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -14,11 +14,11 @@ import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
 import static mtymes.javafixes.concurrency.Runner.runner;
-import static zerod.ReadState.ReadNew;
-import static zerod.ReadState.ReadOld;
-import static zerod.WriteState.*;
 import static zerod.experimental.MagicUtil.wrapExceptionsIntoMagic;
 import static zerod.guide.GuideHelper.WriteBothConfig.*;
+import static zerod.state.ReadState.ReadNew;
+import static zerod.state.ReadState.ReadOld;
+import static zerod.state.WriteState.*;
 
 // todo: test this
 public class GuideHelper {

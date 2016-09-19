@@ -2,9 +2,9 @@ package zerod.guide;
 
 import mtymes.javafixes.object.Tuple;
 import org.junit.Test;
-import zerod.ReadState;
-import zerod.ReadWriteState;
-import zerod.WriteState;
+import zerod.state.ReadState;
+import zerod.state.ReadWriteState;
+import zerod.state.WriteState;
 
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
@@ -15,11 +15,11 @@ import static mtymes.javafixes.object.Tuple.tuple;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static zerod.ReadState.ReadNew;
-import static zerod.ReadState.ReadOld;
-import static zerod.ReadWriteState.*;
-import static zerod.WriteState.WriteBoth;
-import static zerod.WriteState.WriteNew;
+import static zerod.state.ReadState.ReadNew;
+import static zerod.state.ReadState.ReadOld;
+import static zerod.state.ReadWriteState.*;
+import static zerod.state.WriteState.WriteBoth;
+import static zerod.state.WriteState.WriteNew;
 import static zerod.test.Random.randomReadWriteState;
 
 public class TransitionalReadWriteGuideTest {

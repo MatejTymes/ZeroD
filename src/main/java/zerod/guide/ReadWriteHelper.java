@@ -64,7 +64,7 @@ public class ReadWriteHelper implements ReadWriteGuide {
         });
     }
 
-    public <T> T runReadOpWithMagic(Callable<T> oldReader, Callable<T> newReader) {
+    public <T> T runReadOp_WithMagic(Callable<T> oldReader, Callable<T> newReader) {
         T value = null;
         try {
             value = runReadOp(
@@ -130,7 +130,7 @@ public class ReadWriteHelper implements ReadWriteGuide {
         });
     }
 
-    public void runWriteOpWithMagic(Task oldWriter, Task newWriter, WriteBothConfig writeBothConfig) {
+    public void runWriteOp_WithMagic(Task oldWriter, Task newWriter, WriteBothConfig writeBothConfig) {
         try {
             runWriteOp(
                     wrapExceptionsIntoMagic(oldWriter),
@@ -220,7 +220,7 @@ public class ReadWriteHelper implements ReadWriteGuide {
         });
     }
 
-    public <T> T runReadWriteOpWithMagic(Callable<T> oldReadWriter, Callable<T> newReadWriter, WriteBothConfig writeBothConfig) {
+    public <T> T runReadWriteOp_WithMagic(Callable<T> oldReadWriter, Callable<T> newReadWriter, WriteBothConfig writeBothConfig) {
         T value = null;
         try {
             value = runReadWriteOp(

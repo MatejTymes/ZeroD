@@ -14,7 +14,7 @@ import java.util.function.Function;
 
 import static java.util.Arrays.stream;
 
-public class TransitionalReadWriteGuide implements ReadWriteGuide {
+public class TransitionalReadWriteGuide implements SwitchableReadWriteGuide {
 
     private final Map<ReadState, ReusableCountLatch> readCounters = new HashMap<>();
     private final Map<WriteState, ReusableCountLatch> writeCounters = new HashMap<>();
@@ -78,6 +78,7 @@ public class TransitionalReadWriteGuide implements ReadWriteGuide {
         }
     }
 
+    @Override
     public synchronized void switchState(ReadWriteState toState) {
         if (!stateTransitioner.canTransitionFromTo(currentState, toState)) {
             throw new IllegalStateException("Unable to transition from '" + currentState + "' state to '" + toState + "' state");

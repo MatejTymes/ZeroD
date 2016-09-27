@@ -1,6 +1,6 @@
 package zerod.domain;
 
-import mtymes.javafixes.object.Microtype;
+import javafixes.object.Microtype;
 
 public class MigrationId extends Microtype<String> {
 

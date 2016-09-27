@@ -1,6 +1,6 @@
 package zerod.domain;
 
-import mtymes.javafixes.object.DataObject;
+import javafixes.object.DataObject;
 
 import java.time.ZonedDateTime;
 

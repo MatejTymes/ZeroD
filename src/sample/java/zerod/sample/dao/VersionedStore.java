@@ -1,7 +1,7 @@
 package zerod.sample.dao;
 
 import com.google.common.collect.ImmutableMap;
-import mtymes.javafixes.object.Tuple;
+import javafixes.object.Tuple;
 
 import java.util.Map;
 import java.util.Optional;
@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicStampedReference;
 import java.util.function.Function;
 
 import static com.google.common.collect.Maps.newLinkedHashMap;
-import static mtymes.javafixes.object.Tuple.tuple;
+import static javafixes.object.Tuple.tuple;
 
 public class VersionedStore<K> {
 

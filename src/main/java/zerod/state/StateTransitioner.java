@@ -1,6 +1,6 @@
 package zerod.state;
 
-public interface StateTransitioner<T> {
+public interface StateTransitioner {
 
-    boolean canTransitionFromTo(T fromState, T toState);
+    boolean canTransitionFromTo(ReadWriteState fromState, ReadWriteState toState);
 }

@@ -1,6 +1,6 @@
 package zerod.wip;
 
-import mtymes.javafixes.concurrency.Task;
+import javafixes.concurrency.Task;
 import zerod.state.ReadWriteState;
 
 import static zerod.state.ReadWriteState.*;

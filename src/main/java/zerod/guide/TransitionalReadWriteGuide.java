@@ -1,7 +1,10 @@
 package zerod.guide;
 
-import mtymes.javafixes.concurrency.ReusableCountLatch;
-import zerod.state.*;
+import javafixes.concurrency.ReusableCountLatch;
+import zerod.state.ReadState;
+import zerod.state.ReadWriteState;
+import zerod.state.StateTransitioner;
+import zerod.state.WriteState;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,17 +16,17 @@ import static java.util.Arrays.stream;
 
 public class TransitionalReadWriteGuide implements ReadWriteGuide {
 
-    // todo: make part of constructor
-    private final StateTransitioner<ReadWriteState> stateTransitioner = new CoreStateTransitioner();
-
     private final Map<ReadState, ReusableCountLatch> readCounters = new HashMap<>();
     private final Map<WriteState, ReusableCountLatch> writeCounters = new HashMap<>();
+
+    private final StateTransitioner stateTransitioner;
 
     private volatile ReadWriteState currentState;
     private volatile ReadWriteState transitionToState;
 
 
-    public TransitionalReadWriteGuide(ReadWriteState state) {
+    public TransitionalReadWriteGuide(StateTransitioner stateTransitioner, ReadWriteState state) {
+        this.stateTransitioner = stateTransitioner;
         this.currentState = state;
         this.transitionToState = state;
 

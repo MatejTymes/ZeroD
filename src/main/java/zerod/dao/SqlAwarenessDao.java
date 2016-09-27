@@ -1,6 +1,6 @@
 package zerod.dao;
 
-import mtymes.javafixes.object.Tuple;
+import javafixes.object.Tuple;
 import zerod.domain.AgentId;
 import zerod.domain.Awareness;
 import zerod.domain.MigrationId;
@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toMap;
-import static mtymes.javafixes.object.Tuple.tuple;
+import static javafixes.object.Tuple.tuple;
 import static zerod.domain.AgentId.agentId;
 import static zerod.domain.Awareness.Aware;
 import static zerod.domain.Awareness.NotAware;

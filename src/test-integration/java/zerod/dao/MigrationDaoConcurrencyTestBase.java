@@ -1,12 +1,12 @@
 package zerod.dao;
 
-import mtymes.javafixes.concurrency.Runner;
+import javafixes.concurrency.Runner;
 import org.junit.Test;
 import zerod.domain.MigrationId;
 
 import java.util.concurrent.CyclicBarrier;
 
-import static mtymes.javafixes.concurrency.Runner.runner;
+import static javafixes.concurrency.Runner.runner;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;

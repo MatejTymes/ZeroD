@@ -1,6 +1,6 @@
 package zerod.sample.domain;
 
-import mtymes.javafixes.object.DataObject;
+import javafixes.object.DataObject;
 
 public class User extends DataObject {
 

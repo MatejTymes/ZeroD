@@ -1,34 +1,39 @@
 package zerod.guide;
 
-import mtymes.javafixes.object.Tuple;
+import javafixes.object.Tuple;
+import org.junit.After;
 import org.junit.Test;
 import zerod.state.ReadState;
 import zerod.state.ReadWriteState;
+import zerod.state.StateTransitioner;
 import zerod.state.WriteState;
 
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static java.util.Arrays.asList;
 import static java.util.UUID.randomUUID;
-import static mtymes.javafixes.object.Tuple.tuple;
+import static javafixes.object.Tuple.tuple;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static zerod.state.ReadState.ReadNew;
-import static zerod.state.ReadState.ReadOld;
-import static zerod.state.ReadWriteState.*;
-import static zerod.state.WriteState.WriteBoth;
-import static zerod.state.WriteState.WriteNew;
+import static org.mockito.Mockito.*;
+import static zerod.test.Condition.otherThan;
 import static zerod.test.Random.randomReadWriteState;
 
 public class TransitionalReadWriteGuideTest {
+
+    private StateTransitioner stateTransitioner = mock(StateTransitioner.class);
+
+    @After
+    public void tearDown() throws Exception {
+        verifyNoMoreInteractions(stateTransitioner);
+    }
 
     @Test
     public void shouldProvideProperReadAndWriteState() {
         for (ReadWriteState readWriteState : ReadWriteState.values()) {
 
-            TransitionalReadWriteGuide readWriteGuide = new TransitionalReadWriteGuide(readWriteState);
+            TransitionalReadWriteGuide readWriteGuide = new TransitionalReadWriteGuide(stateTransitioner, readWriteState);
 
             // When
             ReadState usedReadState = actualReadState(readWriteGuide);
@@ -47,7 +52,7 @@ public class TransitionalReadWriteGuideTest {
     @Test
     public void shouldReturnProperValueOnReadOperation() {
         ReadWriteState expectedState = randomReadWriteState();
-        ReadWriteGuide readWriteGuide = new TransitionalReadWriteGuide(expectedState);
+        ReadWriteGuide readWriteGuide = new TransitionalReadWriteGuide(stateTransitioner, expectedState);
         UUID expectedResponse = randomUUID();
 
         // When
@@ -58,9 +63,23 @@ public class TransitionalReadWriteGuideTest {
     }
 
     @Test
+    public void shouldUseProperValueOnWriteOperation() {
+        ReadWriteState expectedState = randomReadWriteState();
+        ReadWriteGuide readWriteGuide = new TransitionalReadWriteGuide(stateTransitioner, expectedState);
+
+        AtomicReference<WriteState> usedWriteState = new AtomicReference<>();
+
+        // When
+        readWriteGuide.runWriteOp(writeState -> usedWriteState.set(writeState));
+
+        // Then
+        assertThat(usedWriteState.get(), equalTo(expectedState.writeState));
+    }
+
+    @Test
     public void shouldReturnProperValueOnReadWriteOperation() {
         ReadWriteState expectedState = randomReadWriteState();
-        ReadWriteGuide readWriteGuide = new TransitionalReadWriteGuide(expectedState);
+        ReadWriteGuide readWriteGuide = new TransitionalReadWriteGuide(stateTransitioner, expectedState);
         UUID expectedResponse = randomUUID();
 
         // When
@@ -71,78 +90,47 @@ public class TransitionalReadWriteGuideTest {
     }
 
     @Test
-    public void shouldBeAbleToSwitchToNextState() {
-        TransitionalReadWriteGuide readWriteGuide = new TransitionalReadWriteGuide(ReadOld_WriteOld);
+    public void shouldBeAbleToSwitchToNextValidState() {
+        ReadWriteState oldState = randomReadWriteState();
+        ReadWriteState newState = randomReadWriteState(otherThan(oldState));
+        TransitionalReadWriteGuide readWriteGuide = new TransitionalReadWriteGuide(stateTransitioner, oldState);
 
-        readWriteGuide.switchState(ReadOld_WriteBoth);
-        assertThat(readWriteGuide.getCurrentState(), equalTo(ReadOld_WriteBoth));
-        assertThat(readWriteGuide.getTransitionToState(), equalTo(ReadOld_WriteBoth));
-        assertThat(actualReadState(readWriteGuide), equalTo(ReadOld));
-        assertThat(actualWriteState(readWriteGuide), equalTo(WriteBoth));
-        assertThat(actualReadWriteState(readWriteGuide), equalTo(tuple(ReadOld, WriteBoth)));
+        when(stateTransitioner.canTransitionFromTo(oldState, newState)).thenReturn(true);
 
-        readWriteGuide.switchState(ReadNew_WriteBoth);
-        assertThat(readWriteGuide.getCurrentState(), equalTo(ReadNew_WriteBoth));
-        assertThat(readWriteGuide.getTransitionToState(), equalTo(ReadNew_WriteBoth));
-        assertThat(actualReadState(readWriteGuide), equalTo(ReadNew));
-        assertThat(actualWriteState(readWriteGuide), equalTo(WriteBoth));
-        assertThat(actualReadWriteState(readWriteGuide), equalTo(tuple(ReadNew, WriteBoth)));
+        // When
+        readWriteGuide.switchState(newState);
 
-        readWriteGuide.switchState(ReadNew_WriteNew);
-        assertThat(readWriteGuide.getCurrentState(), equalTo(ReadNew_WriteNew));
-        assertThat(readWriteGuide.getTransitionToState(), equalTo(ReadNew_WriteNew));
-        assertThat(actualReadState(readWriteGuide), equalTo(ReadNew));
-        assertThat(actualWriteState(readWriteGuide), equalTo(WriteNew));
-        assertThat(actualReadWriteState(readWriteGuide), equalTo(tuple(ReadNew, WriteNew)));
-    }
-
-    @Test
-    public void shouldBeAbleToSwitchToTheSameState() {
-        for (ReadWriteState readWriteState : ReadWriteState.values()) {
-
-            TransitionalReadWriteGuide readWriteGuide = new TransitionalReadWriteGuide(readWriteState);
-
-            // When
-            readWriteGuide.switchState(readWriteState);
-
-            // Then
-            assertThat(readWriteGuide.getCurrentState(), equalTo(readWriteState));
-            assertThat(readWriteGuide.getTransitionToState(), equalTo(readWriteState));
-        }
+        // Then
+        verify(stateTransitioner).canTransitionFromTo(oldState, newState);
+        assertThat(readWriteGuide.getCurrentState(), equalTo(newState));
+        assertThat(readWriteGuide.getTransitionToState(), equalTo(newState));
+        assertThat(actualReadState(readWriteGuide), equalTo(newState.readState));
+        assertThat(actualWriteState(readWriteGuide), equalTo(newState.writeState));
+        assertThat(actualReadWriteState(readWriteGuide), equalTo(tuple(newState.readState, newState.writeState)));
     }
 
     @Test
     public void shouldFailOnInvalidStateTransition() {
-        TransitionalReadWriteGuide readWriteGuide;
+        ReadWriteState oldState = randomReadWriteState();
+        ReadWriteState invalidNewState = randomReadWriteState(otherThan(oldState));
+        TransitionalReadWriteGuide readWriteGuide = new TransitionalReadWriteGuide(stateTransitioner, oldState);
 
-        readWriteGuide = new TransitionalReadWriteGuide(ReadOld_WriteOld);
-        for (ReadWriteState invalidTransitionalStates : asList(ReadNew_WriteBoth, ReadNew_WriteNew)) {
-            try {
-                readWriteGuide.switchState(invalidTransitionalStates);
-                fail("expected IllegalStateException");
-            } catch (IllegalStateException expected) {
-                // do nothing
-            }
-        }
+        when(stateTransitioner.canTransitionFromTo(oldState, invalidNewState)).thenReturn(false);
 
-        readWriteGuide = new TransitionalReadWriteGuide(ReadOld_WriteBoth);
-        for (ReadWriteState invalidTransitionalStates : asList(ReadOld_WriteOld, ReadNew_WriteNew)) {
-            try {
-                readWriteGuide.switchState(invalidTransitionalStates);
-                fail("expected IllegalStateException");
-            } catch (IllegalStateException expected) {
-                // do nothing
-            }
-        }
+        try {
+            // When
+            readWriteGuide.switchState(invalidNewState);
 
-        readWriteGuide = new TransitionalReadWriteGuide(ReadNew_WriteNew);
-        for (ReadWriteState invalidTransitionalStates : asList(ReadOld_WriteOld, ReadOld_WriteBoth)) {
-            try {
-                readWriteGuide.switchState(invalidTransitionalStates);
-                fail("expected IllegalStateException");
-            } catch (IllegalStateException expected) {
-                // do nothing
-            }
+            // Then
+            fail("expected IllegalStateException");
+        } catch (IllegalStateException expected) {
+
+            verify(stateTransitioner).canTransitionFromTo(oldState, invalidNewState);
+            assertThat(readWriteGuide.getCurrentState(), equalTo(oldState));
+            assertThat(readWriteGuide.getTransitionToState(), equalTo(oldState));
+            assertThat(actualReadState(readWriteGuide), equalTo(oldState.readState));
+            assertThat(actualWriteState(readWriteGuide), equalTo(oldState.writeState));
+            assertThat(actualReadWriteState(readWriteGuide), equalTo(tuple(oldState.readState, oldState.writeState)));
         }
     }
 

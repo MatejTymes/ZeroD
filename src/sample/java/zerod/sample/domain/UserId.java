@@ -1,6 +1,6 @@
 package zerod.sample.domain;
 
-import mtymes.javafixes.object.Microtype;
+import javafixes.object.Microtype;
 
 import java.util.UUID;
 

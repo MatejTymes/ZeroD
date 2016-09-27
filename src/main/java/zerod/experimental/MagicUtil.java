@@ -1,6 +1,6 @@
 package zerod.experimental;
 
-import mtymes.javafixes.concurrency.Task;
+import javafixes.concurrency.Task;
 import zerod.experimental.exception.MagicWrappingException;
 
 import java.util.concurrent.Callable;

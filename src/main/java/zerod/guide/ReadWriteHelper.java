@@ -1,7 +1,7 @@
 package zerod.guide;
 
-import mtymes.javafixes.concurrency.Runner;
-import mtymes.javafixes.concurrency.Task;
+import javafixes.concurrency.Runner;
+import javafixes.concurrency.Task;
 import zerod.experimental.exception.MagicWrappingException;
 import zerod.state.ReadState;
 import zerod.state.WriteState;
@@ -16,7 +16,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
-import static mtymes.javafixes.concurrency.Runner.runner;
+import static javafixes.concurrency.Runner.runner;
 import static zerod.experimental.MagicUtil.wrapExceptionsIntoMagic;
 import static zerod.guide.ReadWriteHelper.WriteBothConfig.*;
 import static zerod.state.ReadState.ReadNew;
@@ -110,9 +110,7 @@ public class ReadWriteHelper implements ReadWriteGuide {
                     Future<Void> oldProgress = runner.run(oldWriter);
                     Future<Void> newProgress = runner.run(newWriter);
 
-                    // todo: join into one line
-                    runner.waitTillDone();
-                    runner.shutdown();
+                    runner.waitTillDone().shutdown();
 
                     try {
                         newProgress.get();
@@ -185,9 +183,7 @@ public class ReadWriteHelper implements ReadWriteGuide {
                     Future<T> oldProgress = runner.run(oldReadWriter::get);
                     Future<T> newProgress = runner.run(newReadWriter::get);
 
-                    // todo: join into one line
-                    runner.waitTillDone();
-                    runner.shutdown();
+                    runner.waitTillDone().shutdown();
 
                     RuntimeException oldException = null;
                     RuntimeException newException = null;

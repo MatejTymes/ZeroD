@@ -1,6 +1,6 @@
 package zerod.dao;
 
-import mtymes.javafixes.concurrency.Runner;
+import javafixes.concurrency.Runner;
 import org.junit.Test;
 import zerod.domain.Agent;
 import zerod.domain.AgentId;
@@ -10,7 +10,7 @@ import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.concurrent.CyclicBarrier;
 
-import static mtymes.javafixes.concurrency.Runner.runner;
+import static javafixes.concurrency.Runner.runner;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;

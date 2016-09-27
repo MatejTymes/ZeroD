@@ -1,6 +1,6 @@
 package zerod.state;
 
-public class CoreStateTransitioner implements StateTransitioner<ReadWriteState> {
+public class CoreStateTransitioner implements StateTransitioner {
 
     private volatile boolean isRevertMode = false;
 

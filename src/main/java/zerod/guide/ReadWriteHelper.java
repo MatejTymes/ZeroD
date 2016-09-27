@@ -33,7 +33,7 @@ public class ReadWriteHelper implements ReadWriteGuide {
         RunConcurrently
     }
 
-    private final ReadWriteGuide guide;
+    protected final ReadWriteGuide guide;
 
     public ReadWriteHelper(ReadWriteGuide guide) {
         this.guide = guide;

@@ -25,7 +25,6 @@ public class ImmutableReadWriteGuide implements ReadWriteGuide {
     @Override
     public void runWriteOp(Consumer<WriteState> writer) {
         writer.accept(currentState.writeState);
-
     }
 
     @Override

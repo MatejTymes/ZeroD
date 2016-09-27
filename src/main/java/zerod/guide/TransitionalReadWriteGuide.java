@@ -79,7 +79,7 @@ public class TransitionalReadWriteGuide implements SwitchableReadWriteGuide {
     }
 
     @Override
-    public synchronized void switchState(ReadWriteState toState) {
+    public synchronized void switchState(ReadWriteState toState) throws IllegalStateException {
         if (!stateTransitioner.canTransitionFromTo(currentState, toState)) {
             throw new IllegalStateException("Unable to transition from '" + currentState + "' state to '" + toState + "' state");
         }

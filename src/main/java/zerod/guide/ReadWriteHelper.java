@@ -10,18 +10,21 @@ import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
 import static mtymes.javafixes.concurrency.Runner.runner;
 import static zerod.experimental.MagicUtil.wrapExceptionsIntoMagic;
-import static zerod.guide.GuideHelper.WriteBothConfig.*;
+import static zerod.guide.ReadWriteHelper.WriteBothConfig.*;
 import static zerod.state.ReadState.ReadNew;
 import static zerod.state.ReadState.ReadOld;
 import static zerod.state.WriteState.*;
 
 // todo: test this
-public class GuideHelper {
+public class ReadWriteHelper implements ReadWriteGuide {
 
     public enum WriteBothConfig {
 
@@ -30,8 +33,28 @@ public class GuideHelper {
         RunConcurrently
     }
 
+    private final ReadWriteGuide guide;
 
-    public static <T> T runReadOp(ReadWriteGuide guide, Supplier<T> oldReader, Supplier<T> newReader) {
+    public ReadWriteHelper(ReadWriteGuide guide) {
+        this.guide = guide;
+    }
+
+    @Override
+    public <T> T runReadOp(Function<ReadState, T> reader) {
+        return guide.runReadOp(reader);
+    }
+
+    @Override
+    public void runWriteOp(Consumer<WriteState> writer) {
+        guide.runWriteOp(writer);
+    }
+
+    @Override
+    public <T> T runReadWriteOp(BiFunction<ReadState, WriteState, T> readWriter) {
+        return guide.runReadWriteOp(readWriter);
+    }
+
+    public <T> T runReadOp(Supplier<T> oldReader, Supplier<T> newReader) {
         return guide.runReadOp(readState -> {
             checkIsValid(readState);
 
@@ -41,11 +64,10 @@ public class GuideHelper {
         });
     }
 
-    public static <T> T runReadOpWithMagic(ReadWriteGuide guide, Callable<T> oldReader, Callable<T> newReader) {
+    public <T> T runReadOpWithMagic(Callable<T> oldReader, Callable<T> newReader) {
         T value = null;
         try {
             value = runReadOp(
-                    guide,
                     wrapExceptionsIntoMagic(oldReader),
                     wrapExceptionsIntoMagic(newReader)
             );
@@ -55,7 +77,7 @@ public class GuideHelper {
         return value;
     }
 
-    public static void runWriteOp(ReadWriteGuide guide, Runnable oldWriter, Runnable newWriter, WriteBothConfig writeBothConfig) {
+    public void runWriteOp(Runnable oldWriter, Runnable newWriter, WriteBothConfig writeBothConfig) {
         guide.runWriteOp(writeState -> {
             checkIsValid(writeState);
             checkIsValid(writeBothConfig);
@@ -110,10 +132,9 @@ public class GuideHelper {
         });
     }
 
-    public static void runWriteOpWithMagic(ReadWriteGuide guide, Task oldWriter, Task newWriter, WriteBothConfig writeBothConfig) {
+    public void runWriteOpWithMagic(Task oldWriter, Task newWriter, WriteBothConfig writeBothConfig) {
         try {
             runWriteOp(
-                    guide,
                     wrapExceptionsIntoMagic(oldWriter),
                     wrapExceptionsIntoMagic(newWriter),
                     writeBothConfig
@@ -123,7 +144,7 @@ public class GuideHelper {
         }
     }
 
-    public static <T> T runReadWriteOp(ReadWriteGuide guide, Supplier<T> oldReadWriter, Supplier<T> newReadWriter, WriteBothConfig writeBothConfig) {
+    public <T> T runReadWriteOp(Supplier<T> oldReadWriter, Supplier<T> newReadWriter, WriteBothConfig writeBothConfig) {
         return guide.runReadWriteOp((readState, writeState) -> {
             checkIsValid(readState);
             checkIsValid(writeState);
@@ -203,11 +224,10 @@ public class GuideHelper {
         });
     }
 
-    public static <T> T runReadWriteOpWithMagic(ReadWriteGuide guide, Callable<T> oldReadWriter, Callable<T> newReadWriter, WriteBothConfig writeBothConfig) {
+    public <T> T runReadWriteOpWithMagic(Callable<T> oldReadWriter, Callable<T> newReadWriter, WriteBothConfig writeBothConfig) {
         T value = null;
         try {
             value = runReadWriteOp(
-                    guide,
                     wrapExceptionsIntoMagic(oldReadWriter),
                     wrapExceptionsIntoMagic(newReadWriter),
                     writeBothConfig

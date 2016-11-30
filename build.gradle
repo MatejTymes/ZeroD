@@ -42,7 +42,7 @@ dependencies {
     compile 'com.github.matejtymes:javafixes:1.1.0'
     compile 'com.google.guava:guava:19.0'
 
-    sampleCompile 'com.github.matejtymes:javafixes:1.1.0'
+    sampleCompile 'com.github.matejtymes:javafixes:1.1.1'
     sampleCompile 'com.google.guava:guava:19.0'
 
     testCompile 'junit:junit:4.12' // todo: start using junit5 to make use of default interface methods

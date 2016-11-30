@@ -99,10 +99,11 @@ public abstract class AgentDaoTestBase {
     @Test
     public void shouldUpdateHealthIfNotUpdatedSinceDate() {
         AgentId agentId = randomAgentId();
-        dao.registerAgentHealth(agentId, randomLiveHealth());
+        Health initialHealth = randomLiveHealth();
+        dao.registerAgentHealth(agentId, initialHealth);
         Agent originalAgent = dao.findAgent(agentId).get();
 
-        Health newHealth = randomHealth(otherThan(randomLiveHealth()));
+        Health newHealth = randomHealth(otherThan(initialHealth));
         waitForMs(10);
 
         // When
@@ -139,10 +140,11 @@ public abstract class AgentDaoTestBase {
     @Test
     public void shouldNotUpdateHealthIfUpdatedSinceDate() {
         AgentId agentId = randomAgentId();
-        dao.registerAgentHealth(agentId, randomLiveHealth());
+        Health initialHealth = randomLiveHealth();
+        dao.registerAgentHealth(agentId, initialHealth);
         Agent originalAgent = dao.findAgent(agentId).get();
 
-        Health newHealth = randomHealth(otherThan(randomLiveHealth()));
+        Health newHealth = randomHealth(otherThan(initialHealth));
         waitForMs(10);
 
         // When

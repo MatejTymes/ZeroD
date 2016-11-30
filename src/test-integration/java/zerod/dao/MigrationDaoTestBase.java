@@ -9,6 +9,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.mockito.internal.util.collections.Sets.newSet;
 import static zerod.domain.MigrationId.migrationId;
 import static zerod.test.Condition.otherThan;
 import static zerod.test.Random.randomMigrationId;
@@ -69,7 +70,7 @@ public abstract class MigrationDaoTestBase {
         dao.registerMigration(migrationId2);
         dao.registerMigration(migrationId3);
 
-        assertThat(dao.findAllMigrations(), equalTo(newHashSet(migrationId1, migrationId2, migrationId3)));
+        assertThat(dao.findAllMigrations(), equalTo(newSet(migrationId1, migrationId2, migrationId3)));
     }
 
 

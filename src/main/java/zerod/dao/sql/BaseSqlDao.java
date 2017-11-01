@@ -1,4 +1,4 @@
-package zerod.dao;
+package zerod.dao.sql;
 
 import javax.sql.DataSource;
 import java.sql.Connection;

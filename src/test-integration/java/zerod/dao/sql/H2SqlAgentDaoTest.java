@@ -1,8 +1,11 @@
-package zerod.dao;
+package zerod.dao.sql;
 
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import zerod.common.Clock;
+import zerod.dao.AgentDao;
+import zerod.dao.AgentDaoTestBase;
 import zerod.test.db.EmbeddedDb;
 
 import javax.sql.DataSource;
@@ -10,7 +13,7 @@ import javax.sql.DataSource;
 import static zerod.domain.TableName.tableName;
 import static zerod.test.db.EmbeddedDb.createDb;
 
-public class H2SqlMigrationConcurrencyDaoTest extends MigrationDaoConcurrencyTestBase {
+public class H2SqlAgentDaoTest extends AgentDaoTestBase {
 
     private static EmbeddedDb db;
     private static DataSource dataSource;
@@ -32,7 +35,7 @@ public class H2SqlMigrationConcurrencyDaoTest extends MigrationDaoConcurrencyTes
     }
 
     @Override
-    protected MigrationDao getDao() {
-        return new SqlMigrationDao(tableName("zd_migration"), dataSource);
+    protected AgentDao getDao() {
+        return new SqlAgentDao(tableName("zd_agent"), dataSource, new Clock());
     }
 }

@@ -1,5 +1,6 @@
-package zerod.dao;
+package zerod.dao.sql;
 
+import zerod.dao.MigrationDao;
 import zerod.domain.MigrationId;
 import zerod.domain.TableName;
 

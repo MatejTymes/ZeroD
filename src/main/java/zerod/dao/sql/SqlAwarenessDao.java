@@ -1,6 +1,7 @@
-package zerod.dao;
+package zerod.dao.sql;
 
 import javafixes.object.Tuple;
+import zerod.dao.AwarenessDao;
 import zerod.domain.AgentId;
 import zerod.domain.Awareness;
 import zerod.domain.MigrationId;

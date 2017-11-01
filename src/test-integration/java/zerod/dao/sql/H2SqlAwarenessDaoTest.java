@@ -1,9 +1,12 @@
-package zerod.dao;
+package zerod.dao.sql;
 
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import zerod.common.Clock;
+import zerod.dao.AgentDao;
+import zerod.dao.AwarenessDao;
+import zerod.dao.AwarenessDaoTestBase;
 import zerod.test.db.EmbeddedDb;
 
 import javax.sql.DataSource;

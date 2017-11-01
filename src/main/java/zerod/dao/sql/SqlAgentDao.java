@@ -1,6 +1,7 @@
-package zerod.dao;
+package zerod.dao.sql;
 
 import zerod.common.Clock;
+import zerod.dao.AgentDao;
 import zerod.domain.Agent;
 import zerod.domain.AgentId;
 import zerod.domain.Health;

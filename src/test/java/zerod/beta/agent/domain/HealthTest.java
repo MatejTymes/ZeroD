@@ -1,4 +1,4 @@
-package zerod.domain;
+package zerod.beta.agent.domain;
 
 import org.junit.Test;
 

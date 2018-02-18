@@ -3,7 +3,8 @@ package zerod.dao.sql;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import zerod.dao.MigrationDao;
+import zerod.beta.migration.dao.MigrationDao;
+import zerod.beta.migration.dao.sql.SqlMigrationDao;
 import zerod.dao.MigrationDaoConcurrencyTestBase;
 import zerod.test.db.EmbeddedDb;
 

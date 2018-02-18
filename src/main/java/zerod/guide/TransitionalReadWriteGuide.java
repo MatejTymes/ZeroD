@@ -100,11 +100,13 @@ public class TransitionalReadWriteGuide implements SwitchableReadWriteGuide {
         this.currentState = toState;
     }
 
-    ReadWriteState getCurrentState() {
+    @Override
+    public ReadWriteState getCurrentState() {
         return currentState;
     }
 
-    ReadWriteState getTransitionToState() {
+    @Override
+    public ReadWriteState getTransitionToState() {
         return transitionToState;
     }
 }

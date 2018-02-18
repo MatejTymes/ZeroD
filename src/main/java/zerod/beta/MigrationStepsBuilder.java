@@ -1,4 +1,4 @@
-package zerod.wip;
+package zerod.beta;
 
 import javafixes.concurrency.Task;
 import zerod.state.ReadWriteState;

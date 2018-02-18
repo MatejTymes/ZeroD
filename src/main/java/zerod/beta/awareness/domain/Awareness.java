@@ -1,4 +1,4 @@
-package zerod.domain;
+package zerod.beta.awareness.domain;
 
 public enum Awareness {
 

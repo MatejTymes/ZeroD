@@ -1,6 +1,7 @@
 package zerod.dao;
 
 import org.junit.Test;
+import zerod.beta.migration.dao.MigrationDao;
 import zerod.domain.MigrationId;
 
 import static com.google.common.collect.Sets.newHashSet;

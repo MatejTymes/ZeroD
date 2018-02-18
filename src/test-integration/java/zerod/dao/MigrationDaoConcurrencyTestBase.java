@@ -2,6 +2,7 @@ package zerod.dao;
 
 import javafixes.concurrency.Runner;
 import org.junit.Test;
+import zerod.beta.migration.dao.MigrationDao;
 import zerod.domain.MigrationId;
 
 import java.util.concurrent.CyclicBarrier;

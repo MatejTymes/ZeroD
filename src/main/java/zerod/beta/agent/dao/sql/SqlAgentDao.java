@@ -1,10 +1,11 @@
-package zerod.dao.sql;
+package zerod.beta.agent.dao.sql;
 
+import zerod.beta.agent.dao.AgentDao;
+import zerod.beta.agent.domain.Agent;
+import zerod.beta.agent.domain.AgentId;
+import zerod.beta.agent.domain.Health;
 import zerod.common.Clock;
-import zerod.dao.AgentDao;
-import zerod.domain.Agent;
-import zerod.domain.AgentId;
-import zerod.domain.Health;
+import zerod.dao.sql.BaseSqlDao;
 import zerod.domain.TableName;
 
 import javax.sql.DataSource;
@@ -15,9 +16,9 @@ import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.Set;
 
+import static zerod.beta.agent.domain.AgentId.agentId;
+import static zerod.beta.agent.domain.Health.health;
 import static zerod.common.Clock.UTC_ZONE;
-import static zerod.domain.AgentId.agentId;
-import static zerod.domain.Health.health;
 
 public class SqlAgentDao extends BaseSqlDao implements AgentDao {
 

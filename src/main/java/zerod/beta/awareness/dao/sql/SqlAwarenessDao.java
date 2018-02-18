@@ -1,9 +1,10 @@
-package zerod.dao.sql;
+package zerod.beta.awareness.dao.sql;
 
 import javafixes.object.Tuple;
-import zerod.dao.AwarenessDao;
-import zerod.domain.AgentId;
-import zerod.domain.Awareness;
+import zerod.beta.agent.domain.AgentId;
+import zerod.beta.awareness.dao.AwarenessDao;
+import zerod.beta.awareness.domain.Awareness;
+import zerod.dao.sql.BaseSqlDao;
 import zerod.domain.MigrationId;
 import zerod.domain.TableName;
 
@@ -13,9 +14,9 @@ import java.util.Optional;
 
 import static java.util.stream.Collectors.toMap;
 import static javafixes.object.Tuple.tuple;
-import static zerod.domain.AgentId.agentId;
-import static zerod.domain.Awareness.Aware;
-import static zerod.domain.Awareness.NotAware;
+import static zerod.beta.agent.domain.AgentId.agentId;
+import static zerod.beta.awareness.domain.Awareness.Aware;
+import static zerod.beta.awareness.domain.Awareness.NotAware;
 
 public class SqlAwarenessDao extends BaseSqlDao implements AwarenessDao {
 

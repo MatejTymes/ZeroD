@@ -1,8 +1,8 @@
-package zerod.dao;
+package zerod.beta.agent.dao;
 
-import zerod.domain.Agent;
-import zerod.domain.AgentId;
-import zerod.domain.Health;
+import zerod.beta.agent.domain.Agent;
+import zerod.beta.agent.domain.AgentId;
+import zerod.beta.agent.domain.Health;
 
 import java.time.ZonedDateTime;
 import java.util.Optional;

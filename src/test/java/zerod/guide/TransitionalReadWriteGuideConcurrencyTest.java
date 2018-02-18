@@ -4,11 +4,11 @@ import javafixes.object.Tuple;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import zerod.Starter;
 import zerod.state.ReadState;
 import zerod.state.ReadWriteState;
 import zerod.state.StateTransitioner;
 import zerod.state.WriteState;
+import zerod.test.Starter;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -24,6 +24,7 @@ import static zerod.state.ReadState.ReadNew;
 import static zerod.state.ReadWriteState.*;
 import static zerod.state.WriteState.WriteBoth;
 import static zerod.state.WriteState.WriteNew;
+import static zerod.test.Starter.starter;
 
 public class TransitionalReadWriteGuideConcurrencyTest {
 
@@ -32,7 +33,7 @@ public class TransitionalReadWriteGuideConcurrencyTest {
     private ExecutorService executor;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         executor = Executors.newCachedThreadPool();
     }
 
@@ -43,7 +44,7 @@ public class TransitionalReadWriteGuideConcurrencyTest {
     }
 
     @Test
-    public void shouldBlockStateSwitchIfActiveReadOpHasDifferentReadState() throws Exception {
+    public void shouldBlockStateSwitchIfActiveReadOpHasDifferentReadState() {
         TransitionalReadWriteGuide guide = new TransitionalReadWriteGuide(allowAnyStateTransition, ReadOld_WriteBoth);
 
         long durationInMS = 300;
@@ -101,7 +102,7 @@ public class TransitionalReadWriteGuideConcurrencyTest {
     }
 
     @Test
-    public void shouldBlockStateSwitchIfActiveReadWriteOpHasDifferentState() throws Exception {
+    public void shouldBlockStateSwitchIfActiveReadWriteOpHasDifferentState() {
         for (Tuple<ReadWriteState, ReadWriteState> fromToState : asList(
                 tuple(ReadOld_WriteOld, ReadOld_WriteBoth), tuple(ReadOld_WriteBoth, ReadNew_WriteBoth), tuple(ReadNew_WriteBoth, ReadNew_WriteNew)
         )) {
@@ -286,7 +287,7 @@ public class TransitionalReadWriteGuideConcurrencyTest {
 
 
     private Starter submitStartableReadOp(ReadWriteGuide guide, long readDurationInMS) {
-        Starter readStarter = Starter.starter();
+        Starter readStarter = starter();
         CountDownLatch enteredGuidedMethod = new CountDownLatch(1);
         executor.submit(() -> guide.runReadOp(readState -> {
             enteredGuidedMethod.countDown();
@@ -308,7 +309,7 @@ public class TransitionalReadWriteGuideConcurrencyTest {
     }
 
     private Starter submitStartableWriteOp(ReadWriteGuide guide, long writeDurationInMS) {
-        Starter writeStarter = Starter.starter();
+        Starter writeStarter = starter();
         CountDownLatch enteredGuidedMethod = new CountDownLatch(1);
         executor.submit(() -> guide.runWriteOp(writeState -> {
             enteredGuidedMethod.countDown();
@@ -328,7 +329,7 @@ public class TransitionalReadWriteGuideConcurrencyTest {
     }
 
     private Starter submitStartableReadWriteOp(ReadWriteGuide guide, long readDurationInMS) {
-        Starter readWriteStarter = Starter.starter();
+        Starter readWriteStarter = starter();
         CountDownLatch enteredGuidedMethod = new CountDownLatch(1);
         executor.submit(() -> guide.runReadWriteOp((readState, writeState) -> {
             enteredGuidedMethod.countDown();

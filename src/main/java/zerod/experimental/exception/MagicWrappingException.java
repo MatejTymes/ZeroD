@@ -1,6 +1,5 @@
 package zerod.experimental.exception;
 
-// todo: should this go into javafixes ???
 public class MagicWrappingException extends RuntimeException {
 
     public MagicWrappingException(Exception cause) {

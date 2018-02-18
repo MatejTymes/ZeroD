@@ -1,4 +1,4 @@
-package zerod.dao;
+package zerod.beta.migration.dao;
 
 import zerod.domain.MigrationId;
 

@@ -1,4 +1,4 @@
-package zerod.wip;
+package zerod.beta;
 
 public class MigrationSteps {
 }

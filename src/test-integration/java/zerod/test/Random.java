@@ -1,8 +1,8 @@
 package zerod.test;
 
-import zerod.domain.AgentId;
-import zerod.domain.Awareness;
-import zerod.domain.Health;
+import zerod.beta.agent.domain.AgentId;
+import zerod.beta.agent.domain.Health;
+import zerod.beta.awareness.domain.Awareness;
 import zerod.domain.MigrationId;
 
 import java.util.List;
@@ -10,8 +10,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static java.util.UUID.randomUUID;
-import static zerod.domain.AgentId.agentId;
-import static zerod.domain.Health.health;
+import static zerod.beta.agent.domain.AgentId.agentId;
+import static zerod.beta.agent.domain.Health.health;
 import static zerod.domain.MigrationId.migrationId;
 
 // todo: merge both Randoms into one test code

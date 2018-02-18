@@ -1,5 +1,6 @@
 package zerod.state;
 
+// todo: use both ways transition
 public class CoreStateTransitioner implements StateTransitioner {
 
     private volatile boolean isRevertMode = false;

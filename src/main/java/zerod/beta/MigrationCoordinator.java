@@ -1,4 +1,4 @@
-package zerod.wip;
+package zerod.beta;
 
 import zerod.domain.MigrationId;
 import zerod.guide.AccessGuide;

@@ -1,4 +1,4 @@
-package zerod.domain;
+package zerod.beta.agent.domain;
 
 import javafixes.object.DataObject;
 

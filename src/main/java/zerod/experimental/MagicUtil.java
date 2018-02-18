@@ -6,6 +6,7 @@ import zerod.experimental.exception.MagicWrappingException;
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 
+// todo: change package from experimental to magic
 public class MagicUtil {
 
     public static <T> Supplier<T> wrapExceptionsIntoMagic(Callable<T> callable) {

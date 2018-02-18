@@ -1,10 +1,10 @@
-package zerod.dao;
+package zerod.beta.agent.dao;
 
 import org.junit.Test;
+import zerod.beta.agent.domain.Agent;
+import zerod.beta.agent.domain.AgentId;
+import zerod.beta.agent.domain.Health;
 import zerod.common.Clock;
-import zerod.domain.Agent;
-import zerod.domain.AgentId;
-import zerod.domain.Health;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -19,7 +19,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
-import static zerod.domain.Health.noHealth;
+import static zerod.beta.agent.domain.Health.noHealth;
 import static zerod.test.Condition.otherThan;
 import static zerod.test.Random.*;
 import static zerod.test.matcher.OptionalMatcher.isNotPresent;

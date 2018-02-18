@@ -1,11 +1,11 @@
-package zerod.dao.sql;
+package zerod.beta.agent.dao.sql;
 
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import zerod.beta.agent.dao.AgentDao;
+import zerod.beta.agent.dao.AgentDaoTestBase;
 import zerod.common.Clock;
-import zerod.dao.AgentDao;
-import zerod.dao.AgentDaoTestBase;
 import zerod.test.db.EmbeddedDb;
 
 import javax.sql.DataSource;

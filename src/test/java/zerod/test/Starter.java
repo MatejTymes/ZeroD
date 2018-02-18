@@ -1,4 +1,4 @@
-package zerod;
+package zerod.test;
 
 import java.util.concurrent.CountDownLatch;
 

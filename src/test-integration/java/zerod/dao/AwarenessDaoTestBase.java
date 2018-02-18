@@ -1,8 +1,10 @@
 package zerod.dao;
 
 import org.junit.Test;
-import zerod.domain.AgentId;
-import zerod.domain.Awareness;
+import zerod.beta.agent.dao.AgentDao;
+import zerod.beta.agent.domain.AgentId;
+import zerod.beta.awareness.dao.AwarenessDao;
+import zerod.beta.awareness.domain.Awareness;
 import zerod.domain.MigrationId;
 
 import java.util.Map;
@@ -14,7 +16,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static zerod.domain.Health.noHealth;
+import static zerod.beta.agent.domain.Health.noHealth;
 import static zerod.test.Condition.otherThan;
 import static zerod.test.Random.*;
 import static zerod.test.common.MapFiller.fill;

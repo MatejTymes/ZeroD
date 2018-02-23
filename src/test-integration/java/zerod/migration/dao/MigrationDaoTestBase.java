@@ -1,4 +1,4 @@
-package zerod.state.dao;
+package zerod.migration.dao;
 
 import org.junit.Test;
 import zerod.beta.migration.dao.MigrationDao;

@@ -1,11 +1,14 @@
-package zerod.state.dao.sql;
+package zerod.migration.dao.sql;
 
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import zerod.beta.migration.dao.MigrationDao;
-import zerod.beta.migration.dao.sql.SqlMigrationDao;
-import zerod.state.dao.MigrationDaoTestBase;
+import zerod.beta.agent.dao.AgentDao;
+import zerod.beta.agent.dao.sql.SqlAgentDao;
+import zerod.beta.awareness.dao.AwarenessDao;
+import zerod.beta.awareness.dao.sql.SqlAwarenessDao;
+import zerod.beta.common.Clock;
+import zerod.migration.dao.AwarenessDaoTestBase;
 import zerod.test.db.EmbeddedDb;
 
 import javax.sql.DataSource;
@@ -13,7 +16,7 @@ import javax.sql.DataSource;
 import static zerod.beta.domain.TableName.tableName;
 import static zerod.test.db.EmbeddedDb.createDb;
 
-public class H2SqlMigrationDaoTest extends MigrationDaoTestBase {
+public class H2SqlAwarenessDaoTest extends AwarenessDaoTestBase {
 
     private static EmbeddedDb db;
     private static DataSource dataSource;
@@ -35,7 +38,12 @@ public class H2SqlMigrationDaoTest extends MigrationDaoTestBase {
     }
 
     @Override
-    protected MigrationDao getDao() {
-        return new SqlMigrationDao(tableName("zd_migration"), dataSource);
+    protected AgentDao getAgentDao() {
+        return new SqlAgentDao(tableName("zd_agent"), dataSource, new Clock());
+    }
+
+    @Override
+    protected AwarenessDao getDao() {
+        return new SqlAwarenessDao(tableName("zd_agent"), tableName("zd_awareness"), dataSource);
     }
 }

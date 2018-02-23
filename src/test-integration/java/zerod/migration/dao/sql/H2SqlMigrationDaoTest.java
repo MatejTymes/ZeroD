@@ -1,11 +1,11 @@
-package zerod.state.dao.sql;
+package zerod.migration.dao.sql;
 
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import zerod.beta.migration.dao.MigrationDao;
 import zerod.beta.migration.dao.sql.SqlMigrationDao;
-import zerod.state.dao.MigrationDaoConcurrencyTestBase;
+import zerod.migration.dao.MigrationDaoTestBase;
 import zerod.test.db.EmbeddedDb;
 
 import javax.sql.DataSource;
@@ -13,7 +13,7 @@ import javax.sql.DataSource;
 import static zerod.beta.domain.TableName.tableName;
 import static zerod.test.db.EmbeddedDb.createDb;
 
-public class H2SqlMigrationConcurrencyDaoTest extends MigrationDaoConcurrencyTestBase {
+public class H2SqlMigrationDaoTest extends MigrationDaoTestBase {
 
     private static EmbeddedDb db;
     private static DataSource dataSource;

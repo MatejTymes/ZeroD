@@ -1,4 +1,4 @@
-package zerod.state.dao;
+package zerod.migration.dao;
 
 import javafixes.concurrency.Runner;
 import org.junit.Test;

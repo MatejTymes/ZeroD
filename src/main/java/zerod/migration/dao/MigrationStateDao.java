@@ -1,4 +1,4 @@
-package zerod.state.dao;
+package zerod.migration.dao;
 
 import zerod.migration.domain.MigrationId;
 import zerod.migration.exception.UnknownMigrationIdException;

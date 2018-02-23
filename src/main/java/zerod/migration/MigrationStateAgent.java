@@ -1,6 +1,7 @@
 package zerod.migration;
 
 import org.slf4j.Logger;
+import zerod.migration.dao.MigrationStateDao;
 import zerod.migration.domain.MigrationConfig;
 import zerod.migration.domain.MigrationId;
 import zerod.migration.exception.UnknownMigrationIdException;
@@ -8,7 +9,6 @@ import zerod.state.CoreReadWriteHelper;
 import zerod.state.ReadWriteHelper;
 import zerod.state.StateTransitioner;
 import zerod.state.SwitchableReadWriteHelper;
-import zerod.state.dao.MigrationStateDao;
 import zerod.state.domain.ReadWriteState;
 
 import java.util.Map;

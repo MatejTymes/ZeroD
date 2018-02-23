@@ -5,12 +5,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import zerod.beta.agent.dao.AgentDao;
 import zerod.beta.agent.dao.AgentDaoTestBase;
-import zerod.common.Clock;
+import zerod.beta.common.Clock;
 import zerod.test.db.EmbeddedDb;
 
 import javax.sql.DataSource;
 
-import static zerod.domain.TableName.tableName;
+import static zerod.beta.domain.TableName.tableName;
 import static zerod.test.db.EmbeddedDb.createDb;
 
 public class H2SqlAgentDaoTest extends AgentDaoTestBase {

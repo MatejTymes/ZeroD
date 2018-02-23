@@ -1,9 +1,9 @@
 package zerod.beta.migration.dao.sql;
 
+import zerod.beta.dao.sql.BaseSqlDao;
+import zerod.beta.domain.TableName;
 import zerod.beta.migration.dao.MigrationDao;
-import zerod.dao.sql.BaseSqlDao;
-import zerod.domain.MigrationId;
-import zerod.domain.TableName;
+import zerod.migration.domain.MigrationId;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -12,7 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Set;
 
-import static zerod.domain.MigrationId.migrationId;
+import static zerod.migration.domain.MigrationId.migrationId;
 
 public class SqlMigrationDao extends BaseSqlDao implements MigrationDao {
 

@@ -4,9 +4,9 @@ import javafixes.object.Tuple;
 import zerod.beta.agent.domain.AgentId;
 import zerod.beta.awareness.dao.AwarenessDao;
 import zerod.beta.awareness.domain.Awareness;
-import zerod.dao.sql.BaseSqlDao;
-import zerod.domain.MigrationId;
-import zerod.domain.TableName;
+import zerod.beta.dao.sql.BaseSqlDao;
+import zerod.beta.domain.TableName;
+import zerod.migration.domain.MigrationId;
 
 import javax.sql.DataSource;
 import java.util.Map;

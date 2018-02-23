@@ -4,7 +4,7 @@ import org.junit.Test;
 import zerod.beta.agent.domain.Agent;
 import zerod.beta.agent.domain.AgentId;
 import zerod.beta.agent.domain.Health;
-import zerod.common.Clock;
+import zerod.beta.common.Clock;
 
 import java.time.ZonedDateTime;
 import java.util.List;

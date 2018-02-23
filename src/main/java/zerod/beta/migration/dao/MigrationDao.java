@@ -1,6 +1,6 @@
 package zerod.beta.migration.dao;
 
-import zerod.domain.MigrationId;
+import zerod.migration.domain.MigrationId;
 
 import java.util.Set;
 

@@ -4,9 +4,9 @@ import zerod.beta.agent.dao.AgentDao;
 import zerod.beta.agent.domain.Agent;
 import zerod.beta.agent.domain.AgentId;
 import zerod.beta.agent.domain.Health;
-import zerod.common.Clock;
-import zerod.dao.sql.BaseSqlDao;
-import zerod.domain.TableName;
+import zerod.beta.common.Clock;
+import zerod.beta.dao.sql.BaseSqlDao;
+import zerod.beta.domain.TableName;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
@@ -18,7 +18,7 @@ import java.util.Set;
 
 import static zerod.beta.agent.domain.AgentId.agentId;
 import static zerod.beta.agent.domain.Health.health;
-import static zerod.common.Clock.UTC_ZONE;
+import static zerod.beta.common.Clock.UTC_ZONE;
 
 public class SqlAgentDao extends BaseSqlDao implements AgentDao {
 

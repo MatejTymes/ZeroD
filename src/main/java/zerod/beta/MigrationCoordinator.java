@@ -1,7 +1,7 @@
 package zerod.beta;
 
-import zerod.domain.MigrationId;
-import zerod.guide.AccessGuide;
+import zerod.beta.guide.AccessGuide;
+import zerod.migration.domain.MigrationId;
 
 public class MigrationCoordinator {
 

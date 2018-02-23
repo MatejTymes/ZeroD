@@ -1,6 +1,6 @@
 package zerod.test.common;
 
-import zerod.common.Clock;
+import zerod.beta.common.Clock;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;

@@ -1,6 +1,6 @@
 package zerod.sample.dao;
 
-import zerod.guide.AccessGuide;
+import zerod.beta.guide.AccessGuide;
 import zerod.sample.domain.User;
 import zerod.sample.domain.UserId;
 
@@ -10,8 +10,8 @@ import static com.google.common.collect.Maps.newHashMap;
 import static java.util.UUID.randomUUID;
 import static zerod.sample.MigrationHelper.FULL_NAME_MIGRATION;
 import static zerod.sample.domain.UserId.userId;
-import static zerod.state.ReadState.ReadOld;
-import static zerod.state.WriteState.*;
+import static zerod.state.domain.ReadState.ReadOld;
+import static zerod.state.domain.WriteState.*;
 
 public class UserDao {
 

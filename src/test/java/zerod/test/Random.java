@@ -1,6 +1,6 @@
 package zerod.test;
 
-import zerod.state.ReadWriteState;
+import zerod.state.domain.ReadWriteState;
 
 import java.util.List;
 import java.util.function.Function;

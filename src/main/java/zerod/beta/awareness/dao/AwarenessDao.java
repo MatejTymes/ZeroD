@@ -2,7 +2,7 @@ package zerod.beta.awareness.dao;
 
 import zerod.beta.agent.domain.AgentId;
 import zerod.beta.awareness.domain.Awareness;
-import zerod.domain.MigrationId;
+import zerod.migration.domain.MigrationId;
 
 import java.util.Map;
 import java.util.Optional;

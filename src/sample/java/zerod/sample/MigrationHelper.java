@@ -1,12 +1,12 @@
 package zerod.sample;
 
-import zerod.domain.MigrationId;
+import zerod.migration.domain.MigrationId;
 import zerod.sample.dao.VersionedStore;
 import zerod.sample.domain.UserId;
 
 import java.util.Optional;
 
-import static zerod.domain.MigrationId.migrationId;
+import static zerod.migration.domain.MigrationId.migrationId;
 
 public class MigrationHelper {
 

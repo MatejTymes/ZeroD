@@ -1,9 +1,9 @@
 package zerod.beta;
 
 import javafixes.concurrency.Task;
-import zerod.state.ReadWriteState;
+import zerod.state.domain.ReadWriteState;
 
-import static zerod.state.ReadWriteState.*;
+import static zerod.state.domain.ReadWriteState.*;
 
 public class MigrationStepsBuilder {
 

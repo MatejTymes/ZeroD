@@ -1,62 +1,34 @@
-package zerod.guide;
+package zerod.beta.state;
 
 import javafixes.concurrency.Runner;
 import javafixes.concurrency.Task;
 import zerod.experimental.exception.MagicWrappingException;
 import zerod.state.ReadState;
-import zerod.state.WriteState;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static javafixes.concurrency.Runner.runner;
+import static zerod.beta.state.ReadWriteHelper.WriteBothConfig.*;
 import static zerod.experimental.MagicUtil.wrapExceptionsIntoMagic;
-import static zerod.guide.ReadWriteHelper.WriteBothConfig.*;
-import static zerod.state.ReadState.ReadNew;
 import static zerod.state.ReadState.ReadOld;
-import static zerod.state.WriteState.*;
+import static zerod.state.WriteState.WriteNew;
+import static zerod.state.WriteState.WriteOld;
 
 // todo: test this
-public class ReadWriteHelper implements ReadWriteGuide {
+public abstract class AbstractReadWriteHelper implements ReadWriteHelper {
 
-    public enum WriteBothConfig {
-
-        StopIfOldFails,
-        RunNewEvenIfOldFails,
-        RunConcurrently
-    }
-
-    protected final ReadWriteGuide guide;
-
-    public ReadWriteHelper(ReadWriteGuide guide) {
-        this.guide = guide;
-    }
-
+    // todo: test this
     @Override
-    public <T> T runReadOp(Function<ReadState, T> reader) {
-        return guide.runReadOp(reader);
-    }
-
-    @Override
-    public void runWriteOp(Consumer<WriteState> writer) {
-        guide.runWriteOp(writer);
-    }
-
-    @Override
-    public <T> T runReadWriteOp(BiFunction<ReadState, WriteState, T> readWriter) {
-        return guide.runReadWriteOp(readWriter);
-    }
-
     public <T> T runReadOp(Supplier<T> oldReader, Supplier<T> newReader) {
-        return guide.runReadOp(readState -> {
-            checkIsValid(readState);
+        return runReadOp(readState -> {
+            checkNotNull(readState, "ReadState can't be null");
 
             return (readState == ReadOld)
                     ? oldReader.get()
@@ -64,6 +36,8 @@ public class ReadWriteHelper implements ReadWriteGuide {
         });
     }
 
+    // todo: test this
+    @Override
     public <T> T runReadOp_WithMagic(Callable<T> oldReader, Callable<T> newReader) {
         T value = null;
         try {
@@ -77,10 +51,12 @@ public class ReadWriteHelper implements ReadWriteGuide {
         return value;
     }
 
+    // todo: test this
+    @Override
     public void runWriteOp(Runnable oldWriter, Runnable newWriter, WriteBothConfig writeBothConfig) {
-        guide.runWriteOp(writeState -> {
-            checkIsValid(writeState);
-            checkIsValid(writeBothConfig);
+        runWriteOp(writeState -> {
+            checkNotNull(writeState, "WriteState can't be null");
+            checkNotNull(writeBothConfig, "WriteBothConfig can't be null");
 
             if (writeState == WriteOld) {
                 oldWriter.run();
@@ -104,7 +80,7 @@ public class ReadWriteHelper implements ReadWriteGuide {
                     if (oldException != null) {
                         throw oldException;
                     }
-                } else { // RunConcurrently
+                } else if (writeBothConfig == RunConcurrently) {
                     Runner runner = runner(2);
 
                     Future<Void> oldProgress = runner.run(oldWriter);
@@ -125,11 +101,15 @@ public class ReadWriteHelper implements ReadWriteGuide {
                             throw new RuntimeException(cause);
                         }
                     }
+                } else {
+                    throw new IllegalArgumentException("unsupported WriteBothConfig: " + writeBothConfig);
                 }
             }
         });
     }
 
+    // todo: test this
+    @Override
     public void runWriteOp_WithMagic(Task oldWriter, Task newWriter, WriteBothConfig writeBothConfig) {
         try {
             runWriteOp(
@@ -142,11 +122,13 @@ public class ReadWriteHelper implements ReadWriteGuide {
         }
     }
 
+    // todo: test this
+    @Override
     public <T> T runReadWriteOp(Supplier<T> oldReadWriter, Supplier<T> newReadWriter, WriteBothConfig writeBothConfig) {
-        return guide.runReadWriteOp((readState, writeState) -> {
-            checkIsValid(readState);
-            checkIsValid(writeState);
-            checkIsValid(writeBothConfig);
+        return runReadWriteOp((readState, writeState) -> {
+            checkNotNull(readState, "ReadState can't be null");
+            checkNotNull(writeState, "WriteState can't be null");
+            checkNotNull(writeBothConfig, "WriteBothConfig can't be null");
 
             if (writeState == WriteOld) {
                 return oldReadWriter.get();
@@ -177,7 +159,7 @@ public class ReadWriteHelper implements ReadWriteGuide {
 
                     throwExceptionIfSomeOccurred(readState, oldException, newException);
 
-                } else { // RunConcurrently
+                } else if (writeBothConfig == RunConcurrently) { // RunConcurrently
                     Runner runner = runner(2);
 
                     Future<T> oldProgress = runner.run(oldReadWriter::get);
@@ -213,6 +195,8 @@ public class ReadWriteHelper implements ReadWriteGuide {
                     }
 
                     throwExceptionIfSomeOccurred(readState, oldException, newException);
+                } else {
+                    throw new IllegalArgumentException("unsupported WriteBothConfig: " + writeBothConfig);
                 }
 
                 return (readState == ReadOld) ? oldValue : newValue;
@@ -220,6 +204,8 @@ public class ReadWriteHelper implements ReadWriteGuide {
         });
     }
 
+    // todo: test this
+    @Override
     public <T> T runReadWriteOp_WithMagic(Callable<T> oldReadWriter, Callable<T> newReadWriter, WriteBothConfig writeBothConfig) {
         T value = null;
         try {
@@ -234,27 +220,9 @@ public class ReadWriteHelper implements ReadWriteGuide {
         return value;
     }
 
-    private static void checkIsValid(ReadState readState) {
-        if (readState != ReadOld && readState != ReadNew) {
-            throw new IllegalStateException("Invalid ReadState: " + readState);
-        }
-    }
-
-    private static void checkIsValid(WriteState writeState) {
-        if (writeState != WriteOld && writeState != WriteNew && writeState != WriteBoth) {
-            throw new IllegalStateException("Invalid WriteState: " + writeState);
-        }
-    }
-
-    private static void checkIsValid(WriteBothConfig writeBothConfig) {
-        if (writeBothConfig != StopIfOldFails && writeBothConfig != RunNewEvenIfOldFails && writeBothConfig != RunConcurrently) {
-            throw new IllegalStateException("Invalid WriteBothConfig: " + writeBothConfig);
-        }
-    }
-
-    private static void throwExceptionIfSomeOccurred(ReadState readState, RuntimeException oldException, RuntimeException newException) {
-        Optional<RuntimeException> exception = asList(oldException, newException).stream()
-                .filter(e -> e != null)
+    protected static void throwExceptionIfSomeOccurred(ReadState readState, RuntimeException oldException, RuntimeException newException) {
+        Optional<RuntimeException> exception = Stream.of(oldException, newException)
+                .filter(Objects::nonNull)
                 .reduce((e1, e2) -> (readState == ReadOld) ? e1 : e2);
 
         if (exception.isPresent()) {

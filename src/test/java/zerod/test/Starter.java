@@ -19,5 +19,4 @@ public class Starter {
     public void waitForStartSignal() throws InterruptedException {
         startCountDown.await();
     }
-
 }

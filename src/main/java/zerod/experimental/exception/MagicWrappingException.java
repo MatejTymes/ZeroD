@@ -6,7 +6,7 @@ public class MagicWrappingException extends RuntimeException {
         super(cause);
     }
 
-    public void throwWrappedExceptionWithMagic() {
+    public void throwExceptionWrappedWithMagic() {
         throwException(getCause());
     }
 

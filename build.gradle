@@ -43,7 +43,7 @@ dependencies {
     compile 'com.google.guava:guava:19.0'
     compile 'org.slf4j:slf4j-api:1.7.25'
 
-    sampleCompile 'com.github.matejtymes:javafixes:1.1.1'
+    sampleCompile 'com.github.matejtymes:javafixes:1.3.2'
     sampleCompile 'com.google.guava:guava:19.0'
 
     testCompile 'junit:junit:4.12' // todo: start using junit5 to make use of default interface methods
